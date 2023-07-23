@@ -3,7 +3,7 @@
 This repository only contains the code of PRNet. Time series datasets are available at https://github.com/Hanwen-Hu/Time-Series-Datasets.
 
 ## Run
-If you want to reproduce the experiment, please download the datasets from the above link, rename the folder as "DataCSV", and paste it into the folder of this project.
+If you want to reproduce the experiment, please download the datasets from the above link, rename the folder as "DataCSV", unzip all files in "DataCSV" and paste the whole folder into this project.
 Consequently, this project will contain four folders "Loader", "PRNet", "Model" and "DataCSV" and a file "main.py".
 The "Loader" loads the datasets, "PRNet" is the code of our model, and "Model" saves some cases trained by ourselves.
 
