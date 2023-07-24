@@ -14,7 +14,7 @@ The "Loader" loads the datasets, "PRNet" is the code of our model, and "Model" s
 ## Visualization
 There is also a "Visualize.py" file, which is used for visualizing the forecasting result. After pasting "DataCSV" into the folder, you can run the code and obtain forecasting results. Of course you can input different index to see the forecasting results with different input sequences.
 
-The package "Figure" saves nine forecasting results, you can also run the trained models with functions in package "Visual".
+The package "Figure" saves nine forecasting results, you can also run the trained models by yourself.
 
 ## Contact
 If you have any questions or suggestions for our paper or codes, please contact us. Email: hanwen_hu@sjtu.edu.cn.
