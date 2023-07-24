@@ -99,7 +99,6 @@ class Traffic(TimeSeries):
         self.normalize()
         self.split(flag)
 
-
 class Weather(TimeSeries):
     def __init__(self, device, l_pred, l_seq, d_in, flag='train'):
         super().__init__(l_pred, l_seq, d_in)
