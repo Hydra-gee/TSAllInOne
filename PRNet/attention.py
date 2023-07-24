@@ -4,11 +4,9 @@ import math
 import torch
 import torch.nn as nn
 
-from PRNet.settings import args
-
 
 # 周期事件attention
-def corr_attention(query, key, value):
+def corr_attention(query, key, value, device):
     # batch*head_num*seq_num*pattern_num
     assert query.shape[-1] == key.shape[-1]
     score = torch.matmul(query, key.transpose(-1, -2))  # dot product
@@ -20,9 +18,8 @@ def corr_attention(query, key, value):
     size = score.shape
     score = torch.abs(score).reshape(-1)
     _, idx = torch.sort(score, descending=True)
-    prob = torch.arange(1, idx.shape[0]+1).to(args.device)
+    prob = torch.arange(1, idx.shape[0]+1).to(device)
     prob = prob / idx.shape[0]
-    #prob = torch.arange(1 / idx.shape[0], 1 + 1 / idx.shape[0], 1 / idx.shape[0]).to(args.device)
     score[idx] = prob
     score = -torch.log(score).reshape(size) * signal
     score = score / torch.sum(torch.abs(score), dim=-1, keepdim=True)
@@ -31,7 +28,7 @@ def corr_attention(query, key, value):
 
 
 # 趋势事件attention
-def diff_attention(query, key, value):
+def diff_attention(query, key, value, device):
     # 维度为batch*head_num*seq_num*head_dim
     # 此时query和key均为提取到的序列特征
     assert query.shape[-1] == key.shape[-1]
@@ -43,7 +40,7 @@ def diff_attention(query, key, value):
     size = score.shape
     score = score.reshape(-1)
     _, idx = torch.sort(score, descending=False)
-    prob = torch.arange(1, idx.shape[0]+1).to(args.device)
+    prob = torch.arange(1, idx.shape[0]+1).to(device)
     prob = prob / idx.shape[0]
     score[idx] = prob
     score = -torch.log(score).reshape(size)
@@ -63,19 +60,20 @@ def norm_attention(query, key, value):
 
 # 定义多头注意力机制，但可能暂时不考虑使用
 class MultiHeadAttention(nn.Module):
-    def __init__(self, seq_len, pattern_num, state, head_num=1):
+    def __init__(self, device, l_seq, n_pattern, state, n_head=1):
         super().__init__()
-        assert seq_len % head_num == 0
-        assert pattern_num % head_num == 0
+        assert l_seq % n_head == 0
+        assert n_pattern % n_head == 0
         self.state = state
-        self.head_num = head_num
+        self.n_head = n_head
+        self.device = device
 
     def forward(self, query, key, value):
         # batch*seq_num*embed_dim
-        batch_size, seq_num = query.shape[0], query.shape[1]
-        query, key, value = [x.reshape(batch_size, seq_num, self.head_num, -1).transpose(1, 2) for x in (query, key, value)]
+        batch_size, n_segment = query.shape[0], query.shape[1]
+        query, key, value = [x.reshape(batch_size, n_segment, self.n_head, -1).transpose(1, 2) for x in (query, key, value)]
         if self.state:
-            v_out = corr_attention(query, key, value)
+            v_out = corr_attention(query, key, value, self.device)
         else:
-            v_out = diff_attention(query, key, value)
-        return v_out.transpose(1, 2).contiguous().reshape(batch_size, seq_num, -1)
+            v_out = diff_attention(query, key, value, self.device)
+        return v_out.transpose(1, 2).reshape(batch_size, n_segment, -1)

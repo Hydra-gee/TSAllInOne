@@ -23,5 +23,5 @@ def draw_ETTh(id=2100, l_pred=24):
     plt.xlim([0,l_pred*5])
     plt.xticks([0,25,50,75,100])
     plt.subplots_adjust(left=0.05, right=0.95, top=0.76, bottom=0.12)
-    plt.savefig('Figure/visualETTh.pdf', bbox_inches='tight')
+    plt.savefig('Figure/visualETTh.pdf')
     plt.show()

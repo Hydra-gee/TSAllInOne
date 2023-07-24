@@ -23,5 +23,5 @@ def draw_QPS(l_pred=60):
     plt.xlim([0,l_pred*5])
     plt.xticks([0,150,300])
     plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.15)
-    plt.savefig('Figure/visualQPS.pdf', bbox_inches='tight')
+    plt.savefig('Figure/visualQPS.pdf')
     plt.show()

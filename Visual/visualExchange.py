@@ -22,5 +22,5 @@ def draw_Exchange(l_pred=30):
     plt.tick_params(labelsize=20)
     plt.xlim([0,l_pred*5])
     plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.15)
-    plt.savefig('Figure/visualExchange.pdf', bbox_inches='tight')
+    plt.savefig('Figure/visualExchange.pdf')
     plt.show()

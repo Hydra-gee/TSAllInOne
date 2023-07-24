@@ -22,5 +22,5 @@ def draw_Weather(l_pred= 144):
     plt.tick_params(labelsize=20)
     plt.xlim([0,l_pred*5])
     plt.subplots_adjust(left=0.05, right=0.95, top=0.76, bottom=0.12)
-    plt.savefig('Figure/visualWeather.pdf', bbox_inches='tight')
+    plt.savefig('Figure/visualWeather.pdf')
     plt.show()

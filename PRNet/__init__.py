@@ -1,8 +1,8 @@
 import time
+
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
-import torchsummary
 
 from Loader import ETT_Minute, ETT_Hour, Electricity, Exchange, Solar, Weather, Stock, QPS, Traffic
 from PRNet.structure import Model, PeriodNet, TrendNet
@@ -16,19 +16,19 @@ class EXE:
         print('Dataset:', args.dataset)
         print('Prediction Length:', args.l_pred)
         self.data = self.dict[args.dataset]
-        self.seq_len = args.l_pred * args.scale
+        self.l_seq = args.l_pred * args.scale
         self.best_valid = np.Inf
         self.best_epoch = 0
         if load:
             self.model = torch.load('Model/' + args.dataset + '_' + str(self.args.l_pred) + '.pth').to(args.device)
         else:
-            self.model = Model(args.l_pred, args.d_in, args.d_out, args.scale).to(args.device)
+            self.model = Model(args).to(args.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.args.learning_rate, weight_decay=1e-5)
         self.criterion = torch.nn.MSELoss()
         self.mae_fun = lambda x, y: torch.mean((torch.abs(x-y)))
 
     def get_data(self, flag='train'):
-        dataset = self.data(self.args.device, self.args.l_pred, self.seq_len, self.args.d_in, flag)
+        dataset = self.data(self.args.device, self.args.l_pred, self.l_seq, self.args.d_in, flag)
         loader = DataLoader(dataset, batch_size=self.args.batch_size, shuffle=True)
         return loader
 
@@ -58,7 +58,7 @@ class EXE:
                 self.optimizer.step()
             end_time = time.time()
             print('Training Time', round(end_time - start_time, 2))
-            print('Training Loss (MSE): ', train_loss / iter_count)
+            print('Training Loss (MSE): ', round(train_loss / iter_count, 4))
             # validation
             self.model.eval()
             iter_count, valid_loss = 0, 0
@@ -69,7 +69,7 @@ class EXE:
                 label = r_y + a_y
                 loss = self.criterion(output, label)
                 valid_loss += loss.item()
-            print('Validation Loss (MSE): ', valid_loss / iter_count)
+            print('Validation Loss (MSE): ', round(valid_loss / iter_count, 4))
             if valid_loss < self.best_valid:
                 torch.save(self.model, 'Model/' + self.args.dataset + '_' + str(self.args.l_pred) + '.pth')
                 self.best_valid = valid_loss
@@ -90,12 +90,11 @@ class EXE:
             res, avg, r_y, a_y = self.batch_process(x, y)
             output = (res + avg)
             label = r_y + a_y
-            #output, label = self.batch_process_(x, y)
             mse_loss += self.criterion(output, label).item()
             mae_loss += self.mae_fun(output, label).item()
         print('Test Loss')
-        print('MSE: ', mse_loss / iter_count)
-        print('MAE: ', mae_loss / iter_count)
+        print('MSE: ', round(mse_loss / iter_count, 4))
+        print('MAE: ', round(mae_loss / iter_count, 4))
 
     def count_parameter(self):
         total = sum([param.nelement() for param in self.model.parameters()])

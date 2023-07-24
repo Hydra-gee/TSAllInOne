@@ -5,12 +5,12 @@ import PRNet.attention as attn
 
 
 class Layer(nn.Module):
-    def __init__(self, sub_seq_len, pattern_num, stable=True):
+    def __init__(self, device, l_segment, n_pattern, stable=True):
         super().__init__()
         self.state = stable
-        self.encode = nn.Linear(sub_seq_len, pattern_num)
-        self.decode = nn.Linear(pattern_num, sub_seq_len)
-        self.attn = attn.MultiHeadAttention(sub_seq_len, pattern_num, stable)
+        self.encode = nn.Linear(l_segment, n_pattern)
+        self.decode = nn.Linear(n_pattern, l_segment)
+        self.attn = attn.MultiHeadAttention(device, l_segment, n_pattern, stable)
         self.fun = nn.PReLU()
         self.dropout = nn.Dropout(0)
 
@@ -21,22 +21,22 @@ class Layer(nn.Module):
 
 
 class Coder(nn.Module):
-    def __init__(self, layer, layer_num):
+    def __init__(self, layer, n_layer):
         super().__init__()
-        self.layer_num = layer_num
-        self.layer_list = nn.ModuleList([copy.deepcopy(layer) for _ in range(layer_num)])
+        self.n_layer = n_layer
+        self.layer_list = nn.ModuleList([copy.deepcopy(layer) for _ in range(n_layer)])
 
     def forward(self, x):
-        for i in range(self.layer_num):
-            x = self.layer_list[i](x)
+        for layer in self.layer_list:
+            x = layer(x)
         return x
 
 
-# 最后通过一个向量对所有序列做叠加
+# 最后通过一个线性层对所有序列做叠加
 class Generator(nn.Module):
-    def __init__(self, seq_num, out_dim):
+    def __init__(self, n_segment, d_out):
         super().__init__()
-        self.selector = nn.Linear(seq_num, out_dim)
+        self.selector = nn.Linear(n_segment, d_out)
         self.dropout = nn.Dropout(0)
 
     def forward(self, x):
