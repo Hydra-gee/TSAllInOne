@@ -1,3 +1,5 @@
 import Visual as v
 
-v.draw_ETTm(200)
+while True:
+    id = input('Forecasting Index:')
+    v.draw_ETTm(id)

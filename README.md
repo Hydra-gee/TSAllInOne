@@ -10,8 +10,7 @@ The "Loader" loads the datasets, "PRNet" is the code of our model, and "Model" s
 Run "main.py" and the model will begin training and testing. It will output the amount of parameters, training time and accuracy of PRNet for you to evaluate the generality, efficiency and stability. 
 
 ## Visualization
-There is also a "Visual.ipynb" notebook, which is used for visualizing the forecasting result. After pasting "DataCSV" into the folder, you can run each block in the notebook and obtain results in Figure 17 in our paper.
-Of course you can input different index to see the forecasting results with different input sequences.
+There is also a "Visualize.py" file, which is used for visualizing the forecasting result. After pasting "DataCSV" into the folder, you can run the code and obtain forecasting results. Of course you can input different index to see the forecasting results with different input sequences.
 
 ## Contact
 If you have any questions or suggestions for our paper or codes, please contact us. Email: hanwen_hu@sjtu.edu.cn.
