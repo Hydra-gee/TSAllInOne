@@ -1,6 +1,6 @@
 # Recognizing Dominant Patterns for General and Efficient Long-term Time Series Forecasting
 
-This repository only contains the code of PRNet. Time series datasets are available at https://github.com/Hanwen-Hu/Time-Series-Datasets.
+This repository only contains the code of PRNet, with an ETTm dataset. The other time series datasets are available at https://github.com/Hanwen-Hu/Time-Series-Datasets.
 
 ## Run
 If you want to reproduce the experiment, please download the datasets from the above link, rename the folder as "DataCSV", unzip all files in "DataCSV" and paste the whole folder into this project.
