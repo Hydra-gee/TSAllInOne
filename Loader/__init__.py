@@ -90,6 +90,16 @@ class Solar(TimeSeries):
         self.split(flag)
 
 
+class Traffic(TimeSeries):
+    def __init__(self, device, l_pred, l_seq, d_in, flag='train'):
+        super().__init__(l_pred, l_seq, d_in)
+        dataset = loadtxt('DataCSV/Traffic/traffic.csv', delimiter=',')
+        assert d_in <= dataset.shape[1]
+        self.data = Tensor(dataset[:, -d_in:]).to(device)
+        self.normalize()
+        self.split(flag)
+
+
 class Weather(TimeSeries):
     def __init__(self, device, l_pred, l_seq, d_in, flag='train'):
         super().__init__(l_pred, l_seq, d_in)
