@@ -16,11 +16,11 @@ def args_setting(cuda_id=0):
     hyper_para.add_argument('-learning_rate', type=float, default=1e-3)
     hyper_para.add_argument('-patience', type=int, default=5)
     # Dataset Settings
-    hyper_para.add_argument('-dataset', type=str, default='ETTm')
+    hyper_para.add_argument('-dataset', type=str, default='Traffic')
     hyper_para.add_argument('-scale', type=int, default=4)  # l_history = l_pred * scale
     args = hyper_para.parse_args()
-    dims = {'ETTh': 1, 'ETTm': 1, 'Exchange': 1, 'ECL': 1, 'Solar': 1, 'Weather':1, 'Stock':1, 'QPS':1}
-    lens = {'ETTh': 24, 'ETTm': 96, 'Exchange': 105, 'ECL': 96, 'Solar': 144, 'Weather':144, 'Stock':30, 'QPS':120}
+    dims = {'ETTh': 1, 'ETTm': 1, 'Exchange': 1, 'ECL': 1, 'Solar': 1, 'Weather':1, 'Stock':1, 'QPS':1, 'Traffic':1}
+    lens = {'ETTh': 24, 'ETTm': 96, 'Exchange': 30, 'ECL': 96, 'Solar': 144, 'Weather':144, 'Stock':30, 'QPS':60, 'Traffic':24}
     args.l_pred = lens[args.dataset]
     args.d_in = dims[args.dataset]
     args.d_out = 1

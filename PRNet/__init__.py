@@ -4,7 +4,7 @@ import torch
 from torch.utils.data import DataLoader
 import torchsummary
 
-from Loader import ETT_Minute, ETT_Hour, Electricity, Exchange, Solar, Weather, Stock, QPS
+from Loader import ETT_Minute, ETT_Hour, Electricity, Exchange, Solar, Weather, Stock, QPS, Traffic
 from PRNet.structure import Model, PeriodNet, TrendNet
 from PRNet.tool import decomposition
 
@@ -12,7 +12,7 @@ from PRNet.tool import decomposition
 class EXE:
     def __init__(self, args, load=False):
         self.args = args
-        self.dict = {'ETTm': ETT_Minute, 'ETTh': ETT_Hour, 'ECL': Electricity, 'Exchange': Exchange, 'Solar': Solar, 'Weather': Weather, 'Stock':Stock, 'QPS':QPS}
+        self.dict = {'ETTm': ETT_Minute, 'ETTh': ETT_Hour, 'ECL': Electricity, 'Exchange': Exchange, 'Traffic':Traffic, 'Solar': Solar, 'Weather': Weather, 'Stock':Stock, 'QPS':QPS}
         print('Dataset:', args.dataset)
         print('Prediction Length:', args.l_pred)
         self.data = self.dict[args.dataset]
@@ -23,8 +23,6 @@ class EXE:
             self.model = torch.load('Model/' + args.dataset + '_' + str(self.args.l_pred) + '.pth').to(args.device)
         else:
             self.model = Model(args.l_pred, args.d_in, args.d_out, args.scale).to(args.device)
-            #self.model = PeriodNet(args.l_pred, args.d_in, args.d_out, args.scale).to(args.device)
-            #self.model = TrendNet(args.l_pred, args.d_in, args.d_out, args.scale).to(args.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.args.learning_rate, weight_decay=1e-5)
         self.criterion = torch.nn.MSELoss()
         self.mae_fun = lambda x, y: torch.mean((torch.abs(x-y)))
@@ -38,10 +36,6 @@ class EXE:
         res, avg = self.model(x)
         r_y, a_y = decomposition(y, self.args.l_pred)
         return res, avg, r_y[:, :, -self.args.d_out:], a_y[:, :, -self.args.d_out:]
-
-    # def batch_process_(self, x, y):
-    #     output = self.model(x)
-    #     return output, y
 
     def train(self):
         print('Total Epochs:', self.args.epochs)
@@ -59,8 +53,6 @@ class EXE:
                 self.optimizer.zero_grad()
                 res, avg, r_y, a_y = self.batch_process(x, y)
                 loss = self.criterion(res, r_y) + self.criterion(avg, a_y)
-                #res, y = self.batch_process_(x, y)
-                #loss = self.criterion(res, y)
                 train_loss += loss.item()
                 loss.backward()
                 self.optimizer.step()

@@ -7,7 +7,6 @@ def decomposition(x, l_window):
     # batch * len * channel
     left = x[:, :1, :].repeat(1, math.floor(l_window/2), 1)
     right = x[:, -1:, :].repeat(1, math.ceil(l_window/2), 1)
-    #print(left.shape, right.shape, x.shape)
     c = torch.cat([left, x, right], dim=1)
     window = torch.nn.AvgPool1d(l_window+1, stride=1)  # 滑动窗口的长度就设置为预测长度即可
     avg = window(c.transpose(1, 2)).transpose(1, 2)

@@ -45,7 +45,6 @@ def diff_attention(query, key, value):
     _, idx = torch.sort(score, descending=False)
     prob = torch.arange(1, idx.shape[0]+1).to(args.device)
     prob = prob / idx.shape[0]
-    #prob = torch.arange(1.0 / idx.shape[0], 1 + 1.0 / idx.shape[0], 1.0 / idx.shape[0]).to(args.device)
     score[idx] = prob
     score = -torch.log(score).reshape(size)
     score = score / torch.sum(score, dim=-1, keepdim=True)
@@ -56,9 +55,6 @@ def diff_attention(query, key, value):
 def norm_attention(query, key, value):
     assert query.shape[-1] == key.shape[-1]
     score = torch.matmul(query, key.transpose(-1, -2))  # dot product
-    #len_q = torch.sqrt(torch.sum(query * query, dim=-1))
-    #len_k = torch.sqrt(torch.sum(key * key, dim=-1))
-    #len_mat = torch.matmul(len_q.unsqueeze(-1), len_k.unsqueeze(-2))
     score = score / math.sqrt(query.shape[-1])  # cosine similarity
     score = torch.softmax(score, dim=-1)
     v_attn = torch.matmul(score, value)

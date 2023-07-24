@@ -20,11 +20,6 @@ class Model(nn.Module):
         avg = self.model_mu(avg)
         return res, avg
 
-    # def forward(self, x):
-    #     avg = torch.mean(x, dim=1, keepdim=True)
-    #     x = self.model_alpha(x - avg)
-    #     return x + avg
-
 
 class PeriodNet(nn.Module):
     def __init__(self, l_pred, d_in, d_out, scale):
@@ -32,11 +27,10 @@ class PeriodNet(nn.Module):
         self.pred_len = l_pred
         self.out_dim = d_out
         self.slice_step = (scale - 1) * self.pred_len // (args.slice_num - 1)
-        self.embed = nn.Linear(args.slice_num * d_in, args.embed_dim)
+        self.embed = nn.Linear(args.slice_num * d_in, args.slice_num * d_in)
         layer = u.Layer(self.pred_len, args.pattern_dim, stable=True)
-        self.coder = u.Coder(layer, args.period_layer)
-        self.generator = u.Generator(args.embed_dim, d_out)
-        # self.generator = u.Generator(args.slice_num * basic.d_in, basic.d_out)
+        self.coder = u.Coder(layer, args.layer_num)
+        self.generator = u.Generator(args.slice_num * d_in, d_out)
 
     def forward(self, x):
         x = slicing(x, self.slice_step, self.pred_len)
@@ -52,9 +46,9 @@ class TrendNet(nn.Module):
         self.out_dim = d_out
         self.slice_step = (scale - 1) * l_pred // (args.slice_num - 1)
         layer = u.Layer(l_pred, args.pattern_dim, stable=False)
-        self.embed = nn.Linear(args.slice_num * d_in, args.embed_dim)
-        self.coder = u.Coder(layer, args.trend_layer)
-        self.generator = u.Generator(args.embed_dim, d_out)
+        self.embed = nn.Linear(args.slice_num * d_in, args.slice_num * d_in)
+        self.coder = u.Coder(layer, args.layer_num)
+        self.generator = u.Generator(args.slice_num * d_in, d_out)
 
     def forward(self, x):
         avg = torch.mean(x, dim=-2, keepdim=True)

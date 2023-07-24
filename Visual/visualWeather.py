@@ -14,12 +14,10 @@ def draw_Weather(l_pred= 144):
     x = x.squeeze(-1).detach().cpu().numpy()
     y = y.squeeze(-1).detach().cpu().numpy()
     y_bar = y_bar.squeeze(0).squeeze(-1).detach().cpu().numpy()
-
     plt.figure(figsize=(8, 3))
     plt.plot(range(l_pred * 4), x)
     plt.plot(range(l_pred * 4, l_pred * 5), y, label='real')
     plt.plot(range(l_pred * 4, l_pred * 5), y_bar+0.08, label = 'predict')
-    #plt.legend(fontsize=18, loc='lower right', ncol=2)
     plt.yticks([])
     plt.tick_params(labelsize=20)
     plt.xlim([0,l_pred*5])

@@ -1,5 +1,6 @@
-import Visual as v
+from Visual import draw_ETTh, draw_ETTm, draw_ECL, draw_Exchange, draw_Solar, draw_QPS, draw_Traffic, draw_Stock, draw_Weather
 
-while True:
-    id = input('Forecasting Index:')
-    v.draw_ETTm(id)
+
+draw_ETTm()
+draw_ETTh()
+draw_QPS()

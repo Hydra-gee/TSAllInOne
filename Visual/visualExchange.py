@@ -4,7 +4,7 @@ plt.rcParams['font.sans-serif'] = ['Times New Roman']
 from Loader import Exchange as Data
 device = torch.device('cuda', 0)
 
-def draw_Echange(l_pred=30):
+def draw_Exchange(l_pred=30):
     name = 'Model/Exchange_' + str(l_pred) + '.pth'
     model = torch.load(name).to(device)
     data = Data(device, l_pred, l_pred*4, 1, flag='valid')

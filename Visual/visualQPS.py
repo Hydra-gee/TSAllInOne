@@ -4,7 +4,7 @@ plt.rcParams['font.sans-serif'] = ['Times New Roman']
 from Loader import QPS as Data
 device = torch.device('cuda', 0)
 
-def draw_QPS(l_pred= 120):
+def draw_QPS(l_pred=60):
     name = 'Model/QPS_'+str(l_pred)+'.pth'
     model = torch.load(name).to(device)
     data = Data(device, l_pred, l_pred*4, 1, flag='valid')
@@ -14,16 +14,14 @@ def draw_QPS(l_pred= 120):
     x = x.squeeze(-1).detach().cpu().numpy()
     y = y.squeeze(-1).detach().cpu().numpy()
     y_bar = y_bar.squeeze(0).squeeze(-1).detach().cpu().numpy()
-
     plt.figure(figsize=(8, 2.4))
     plt.plot(range(l_pred * 4), x)
     plt.plot(range(l_pred * 4, l_pred * 5), y, label='real')
     plt.plot(range(l_pred * 4, l_pred * 5), y_bar, label = 'predict')
-    #plt.legend(fontsize=18, loc='lower left', ncol=2)
     plt.yticks([])
     plt.tick_params(labelsize=20)
     plt.xlim([0,l_pred*5])
-    plt.xticks([0,150,300,450])
+    plt.xticks([0,150,300])
     plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.15)
     plt.savefig('Figure/visualQPS.pdf', bbox_inches='tight')
     plt.show()

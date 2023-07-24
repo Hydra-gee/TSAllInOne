@@ -14,7 +14,6 @@ def draw_Traffic(l_pred= 24):
     x = x.squeeze(-1).detach().cpu().numpy()
     y = y.squeeze(-1).detach().cpu().numpy()
     y_bar = y_bar.squeeze(0).squeeze(-1).detach().cpu().numpy()
-
     plt.figure(figsize=(8, 2.4))
     plt.plot(range(l_pred * 4), x)
     plt.plot(range(l_pred * 4, l_pred * 5), y, label='real')
