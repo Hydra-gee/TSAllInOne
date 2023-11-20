@@ -1,4 +1,4 @@
-# Recognizing Dominant Patterns for General and Efficient Long-term Time Series Forecasting
+# Recognizing Dominant Patterns for Long-term Time Series Forecasting
 
 ## Datasets
 This repository only contains the code of PRNet, with eight datasets.
