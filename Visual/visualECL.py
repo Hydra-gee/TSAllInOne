@@ -1,11 +1,11 @@
 import torch
 import matplotlib.pyplot as plt
 plt.rcParams['font.sans-serif'] = ['Times New Roman']
-from Loader import Electricity as Data
+from data_loader import Electricity as Data
 device = torch.device('cuda', 0)
 
 def draw_ECL(l_pred=96):
-    name = 'Model/ECL_'+str(l_pred)+'.pth'
+    name = 'files/ECL_'+str(l_pred)+'.pth'
     model = torch.load(name).to(device)
     data = Data(device, l_pred, l_pred*4, 1, flag='valid')
     x, y = data[2000]

@@ -1,11 +1,11 @@
 import torch
 import matplotlib.pyplot as plt
 plt.rcParams['font.sans-serif'] = ['Times New Roman']
-from Loader import QPS as Data
+from data_loader import QPS as Data
 device = torch.device('cuda', 0)
 
 def draw_QPS(l_pred=60):
-    name = 'Model/QPS_'+str(l_pred)+'.pth'
+    name = 'files/QPS_'+str(l_pred)+'.pth'
     model = torch.load(name).to(device)
     data = Data(device, l_pred, l_pred*4, 1, flag='valid')
     x, y = data[0]

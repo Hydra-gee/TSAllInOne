@@ -1,11 +1,11 @@
 import torch
 import matplotlib.pyplot as plt
 plt.rcParams['font.sans-serif'] = ['Times New Roman']
-from Loader import ETT_Minute as Data
+from data_loader import ETT_Minute as Data
 device = torch.device('cuda', 0)
 
 def draw_ETTm(pos=200, l_pred=96):
-    name = 'Model/ETTm_'+str(l_pred) + '.pth'
+    name = 'files/ETTm_'+str(l_pred) + '.pth'
     model = torch.load(name).to(device)
     data = Data(device, l_pred, l_pred*4, 1, flag='valid')
     x, y = data[pos]

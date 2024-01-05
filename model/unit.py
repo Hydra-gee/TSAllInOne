@@ -1,7 +1,7 @@
 import copy
 import torch.nn as nn
 
-import PRNet.attention as attn
+import model.attention as attn
 
 
 class Layer(nn.Module):

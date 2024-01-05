@@ -1,11 +1,11 @@
 import torch
 import matplotlib.pyplot as plt
 plt.rcParams['font.sans-serif'] = ['Times New Roman']
-from Loader import Stock as Data
+from data_loader import Stock as Data
 device = torch.device('cuda', 0)
 
 def draw_Stock(l_pred= 30):
-    name = 'Model/Stock_'+str(l_pred)+'.pth'
+    name = 'files/Stock_'+str(l_pred)+'.pth'
     model = torch.load().to(device)
     data = Data(device, l_pred, l_pred*4, 1, flag='valid')
     x, y = data[400]

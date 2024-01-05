@@ -4,9 +4,9 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 
-from Loader import ETT_Minute, ETT_Hour, Electricity, Exchange, Solar, Weather, Stock, QPS, Traffic
-from PRNet.structure import Model, PeriodNet, TrendNet
-from PRNet.tool import decomposition
+from data_loader import ETT_Hour, ETT_Minute, Electricity, Exchange, Solar, Weather, QPS, Traffic
+from model.structure import Model, PeriodNet, TrendNet
+from model.tool import decomposition
 
 
 class EXE:
@@ -20,7 +20,7 @@ class EXE:
         self.best_valid = np.Inf
         self.best_epoch = 0
         if load:
-            self.model = torch.load('Model/' + args.dataset + '_' + str(self.args.l_pred) + '.pth').to(args.device)
+            self.model = torch.load('files/' + args.dataset + '_' + str(self.args.l_pred) + '.pth').to(args.device)
         else:
             self.model = Model(args).to(args.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.args.learning_rate, weight_decay=1e-5)
@@ -71,7 +71,7 @@ class EXE:
                 valid_loss += loss.item()
             print('Validation Loss (MSE): ', round(valid_loss / iter_count, 4))
             if valid_loss < self.best_valid:
-                torch.save(self.model, 'Model/' + self.args.dataset + '_' + str(self.args.l_pred) + '.pth')
+                torch.save(self.model, 'files/' + self.args.dataset + '_' + str(self.args.l_pred) + '.pth')
                 self.best_valid = valid_loss
                 patient_epoch = 0
             else:
@@ -81,7 +81,7 @@ class EXE:
                 break
 
     def test(self):
-        self.model = torch.load('Model/' + self.args.dataset + '_' + str(self.args.l_pred) + '.pth').to(self.args.device)
+        self.model = torch.load('files/' + self.args.dataset + '_' + str(self.args.l_pred) + '.pth').to(self.args.device)
         test_loader = self.get_data('test')
         iter_count, mse_loss, mae_loss = 0, 0, 0
         self.model.eval()

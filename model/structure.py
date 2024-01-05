@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 
-import PRNet.unit as unit
-from PRNet.tool import slicing, decomposition
+import model.unit as unit
+from model.tool import slicing, decomposition
 
 
 class Model(nn.Module):
