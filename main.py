@@ -40,5 +40,5 @@ else:
 
 process = model.PRNet(args)
 process.count_parameter()
-process.train()
+# process.train()
 process.test()
