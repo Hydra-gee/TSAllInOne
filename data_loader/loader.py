@@ -36,7 +36,7 @@ class TimeSeries(Dataset):
             self.data = self.data[int(self.data.shape[0] * 0.8):]
 
 
-class ETT_Hour(TimeSeries):
+class ETTh(TimeSeries):
     def __init__(self, device, pred_len, seq_len, channel_dim, flag='train', idx=1):
         super().__init__(pred_len, seq_len)
         dataset = pd.read_csv('dataset/ETT/ETTh' + str(idx) + '.csv')
@@ -46,7 +46,7 @@ class ETT_Hour(TimeSeries):
         self._split(flag)
 
 
-class ETT_Minute(TimeSeries):
+class ETTm(TimeSeries):
     def __init__(self, device, pred_len, seq_len, channel_dim, flag='train', idx=1):
         super().__init__(pred_len, seq_len)
         dataset = pd.read_csv('dataset/ETT/ETTm' + str(idx) + '.csv')
@@ -56,7 +56,7 @@ class ETT_Minute(TimeSeries):
         self._split(flag)
 
 
-class Electricity(TimeSeries):
+class ECL(TimeSeries):
     def __init__(self, device, pred_len, seq_len, channel_dim, flag='train'):
         super().__init__(pred_len, seq_len)
         dataset = pd.read_csv('dataset/LD2011_2014.csv')

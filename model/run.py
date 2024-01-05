@@ -6,13 +6,12 @@ from torch.utils.data import DataLoader
 
 from data_loader import *
 from model.structure import Model
-from model.tools import decomposition
 
 
 class PRNet:
     def __init__(self, args, load=False):
         self.args = args
-        self.dict = {'ECL': Electricity, 'ETTh': ETT_Hour, 'ETTm': ETT_Minute, 'Exchange': Exchange, 'QPS':QPS, 'Solar': Solar, 'Traffic':Traffic, 'Weather': Weather}
+        self.dict = {'ECL': ECL, 'ETTh': ETTh, 'ETTm': ETTm, 'Exchange': Exchange, 'QPS': QPS, 'Solar': Solar, 'Traffic': Traffic, 'Weather': Weather}
         print('Dataset:', args.dataset)
         print('Prediction Length:', args.pred_len)
         self.seq_len = args.pred_len * args.scale
@@ -31,11 +30,6 @@ class PRNet:
         dataset = DataLoader(dataset, batch_size=self.args.batch_size, shuffle=True)
         return dataset
 
-    def batch_process(self, x, y):
-        res, avg = self.model(x)
-        r_y, a_y = decomposition(y, self.args.l_pred)
-        return res, avg, r_y[:, :, -self.args.d_out:], a_y[:, :, -self.args.d_out:]
-
     def train(self):
         print('Total Epochs:', self.args.epochs)
         train_loader = self._get_data('train')
@@ -53,8 +47,7 @@ class PRNet:
                 y = y - avg
                 self.optimizer.zero_grad()
                 season, trend = self.model(x)
-                # res, avg, r_y, a_y = self.batch_process(x, y)
-                loss = self.mse_func(season + trend, y) #+ self.mse_func(trend, y - season)
+                loss = self.mse_func(season + trend, y)  # + self.mse_func(trend, y - season)
                 train_loss += loss.item()
                 loss.backward()
                 self.optimizer.step()
@@ -68,7 +61,6 @@ class PRNet:
             for i, (x, y) in enumerate(valid_loader):
                 avg = torch.mean(x, dim=1, keepdim=True)
                 x = x - avg
-                #res, avg, r_y, a_y = self.batch_process(x, y)
                 season, trend = self.model(x)
                 loss = self.mse_func(season + trend + avg, y)
                 valid_loss += loss.item()
@@ -90,7 +82,6 @@ class PRNet:
         batch_num, mse_loss, mae_loss = 0, 0, 0
         self.model.eval()
         for i, (x, y) in enumerate(test_loader):
-            # res, avg, r_y, a_y = self.batch_process(x, y)
             avg = torch.mean(x, dim=1, keepdim=True)
             x = x - avg
             season, trend = self.model(x)

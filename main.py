@@ -21,11 +21,12 @@ lens = {'ECL': 96, 'ETTh': 24, 'ETTm': 96, 'Exchange': 30, 'QPS':60, 'Solar': 14
 # Model Settings
 hyper_para.add_argument('-embed_dim', type=int, default=16, help='Number of Patterns')
 hyper_para.add_argument('-layer_num', type=int, default=2, help='Number of Attention Layers')
-hyper_para.add_argument('-segment_num', type=int, default=19, help='Number of Sliced Segments')
+hyper_para.add_argument('-seg_num', type=int, default=19, help='Number of Sliced Segments')
 args = hyper_para.parse_args()
 
 args.pred_len = lens[args.dataset]
 args.channel_dim = dims[args.dataset]
+
 if args.dataset in ['ETTh', 'ETTm', 'Weather']:
     args.individual = True
 else:

@@ -1,1 +1,1 @@
-from data_loader.loader import ETT_Hour, ETT_Minute, Electricity, Exchange, Weather, QPS, Solar, Traffic
+from data_loader.loader import ETTh, ETTm, ECL, Exchange, Weather, QPS, Solar, Traffic
