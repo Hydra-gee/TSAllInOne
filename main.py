@@ -15,14 +15,14 @@ hyper_para.add_argument('-epochs', type=int, default=30)
 hyper_para.add_argument('-learning_rate', type=float, default=1e-3)
 hyper_para.add_argument('-patience', type=int, default=5, help='Early Stopping')
 # Dataset Settings
-hyper_para.add_argument('-dataset', type=str, default='ECL')
+hyper_para.add_argument('-dataset', type=str, default='ETTm')
 hyper_para.add_argument('-scale', type=int, default=4, help='l_history = l_pred * scale')
-dims = {'ETTh': 1, 'ETTm': 1, 'Exchange': 1, 'ECL': 1, 'Solar': 1, 'Weather':1, 'Stock':1, 'QPS':1, 'Traffic':1}
-lens = {'ETTh': 24, 'ETTm': 96, 'Exchange': 30, 'ECL': 96, 'Solar': 144, 'Weather':144, 'Stock':30, 'QPS':60, 'Traffic':24}
-# model Settings
+dims = {'ETTh': 7, 'ETTm': 7, 'Exchange': 8, 'ECL': 1,'Traffic':1, 'Solar': 1, 'Weather':1, 'QPS':1}
+lens = {'ETTh': 24, 'ETTm': 96, 'Exchange': 30, 'ECL': 96, 'Solar': 144, 'Weather':144, 'QPS':60, 'Traffic':144}
+# Model Settings
 hyper_para.add_argument('-n_pattern', type=int, default=16, help='Number of Fluctuation Patterns')
-hyper_para.add_argument('-n_layer', type=int, default=2, help='Number of Attention Layers')
-hyper_para.add_argument('-n_segment', type=int, default=19, help='Number of Sliced Segments')
+hyper_para.add_argument('-layer_num', type=int, default=2, help='Number of Attention Layers')
+hyper_para.add_argument('-segment_num', type=int, default=19, help='Number of Sliced Segments')
 args = hyper_para.parse_args()
 args.l_pred = lens[args.dataset]
 args.d_in = dims[args.dataset]
