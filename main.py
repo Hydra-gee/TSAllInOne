@@ -14,18 +14,19 @@ hyper_para.add_argument('-epochs', type=int, default=30)
 hyper_para.add_argument('-learning_rate', type=float, default=5e-4)
 hyper_para.add_argument('-patience', type=int, default=5, help='Early Stopping')
 # Dataset Settings
-hyper_para.add_argument('-dataset', type=str, default='ETTm')
-hyper_para.add_argument('-scale', type=int, default=4, help='l_history = l_pred * scale')
-dims = {'ECL': 370, 'ETTh': 7, 'ETTm': 7, 'Exchange': 8, 'QPS':1, 'Solar': 137, 'Traffic':862, 'Weather':1}  # dimensions of datasets
-lens = {'ECL': 96, 'ETTh': 24, 'ETTm': 96, 'Exchange': 30, 'QPS':60, 'Solar': 144, 'Traffic':144, 'Weather':144}  # forecasting lengths of datasets
+hyper_para.add_argument('-dataset', type=str, default='ECL')
+hyper_para.add_argument('-scale', type=int, default=4, help='seq_len = pred_len * scale')
+channel_dims = {'ECL': 370, 'ETTh': 7, 'ETTm': 7, 'Exchange': 8, 'QPS': 1, 'Solar': 137, 'Traffic': 862, 'Weather': 1}  # dimensions of datasets
+pred_lens = {'ECL': 96, 'ETTh': 24, 'ETTm': 96, 'Exchange': 30, 'QPS': 60, 'Solar': 144, 'Traffic': 144, 'Weather': 144}  # forecasting lengths of datasets
 # Model Settings
-hyper_para.add_argument('-embed_dim', type=int, default=16, help='Number of Patterns')
+hyper_para.add_argument('-embed_dim', type=int, default=16, help='Embedding Dimension')
 hyper_para.add_argument('-layer_num', type=int, default=2, help='Number of Attention Layers')
 hyper_para.add_argument('-seg_num', type=int, default=19, help='Number of Sliced Segments')
+hyper_para.add_argument('-dropout', type=float, default=0.1, help='Dropout Probability')
 args = hyper_para.parse_args()
 
-args.pred_len = lens[args.dataset]
-args.channel_dim = dims[args.dataset]
+args.pred_len = pred_lens[args.dataset]
+args.channel_dim = channel_dims[args.dataset]
 
 if args.dataset in ['ETTh', 'ETTm', 'Weather']:
     args.individual = True
@@ -40,5 +41,5 @@ else:
 
 process = model.PRNet(args)
 process.count_parameter()
-# process.train()
+process.train()
 process.test()

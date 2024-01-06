@@ -35,7 +35,7 @@ class Net(nn.Module):
             self.generator = nn.ModuleList([unit.Generator(args.seg_num) for _ in range(args.channel_dim)])
         else:
             self.coder = unit.Coder(args, mode)
-            self.generator = unit.Generator(args.seg_num)
+            self.generator = unit.Generator(args.seg_num, args.dropout)
 
     def forward(self, x):
         x = self.embed_layer(x)

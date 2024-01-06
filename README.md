@@ -4,7 +4,7 @@
 This repository only contains the code of PRNet, with seven datasets.
 `ETTh`, `ETTm`, `Exchange`, `QPS`, and `Weather` are available in the `dataset` folder, `Solar` and `Traffic` should be firstly unzipped.
 
-`ECL` dataset is too large to upload, but can be downloaded from [here](https://archive.ics.uci.edu/dataset/321/electricityloaddiagrams20112014). After downloaded and unzipped, the `LD2011_2014.txt` file should be renamed as `LD2011_2014.csv` and copied into the `dataset` folder.
+`ECL` dataset is too large to upload, but can be downloaded from [here](https://archive.ics.uci.edu/dataset/321/electricityloaddiagrams20112014). After downloaded and unzipped, the `LD2011_2014.txt` file should be copied into the `dataset` folder. **Attention!** The `,` in `LD2011_2014.txt` should be replaced with `.`, or else the values cannot be successfully identified.
 
 | Dataset  | Lengths | Dims | Files |
 |:--------:|:-------:|:----:|:-----:|

@@ -7,22 +7,22 @@ from model.attention import Attention
 class Layer(nn.Module):
     def __init__(self, device, seg_len, embed_dim, mode, dropout=0):
         super().__init__()
-        self.encode = nn.Linear(seg_len, embed_dim)
-        self.decode = nn.Linear(embed_dim, seg_len)
+        self.encode = nn.Sequential(nn.Linear(seg_len, embed_dim), nn.Dropout(dropout))
+        self.decode = nn.Sequential(nn.Linear(embed_dim, seg_len), nn.Dropout(dropout))
         self.attn = Attention(device, mode)
         self.func = nn.ReLU()
-        self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):
         x_new = self.encode(x)
-        x_new = self.func(self.decode(self.attn(x, x, x_new)))
-        return self.dropout(x_new) + x
+        x_new = self.attn(x, x, x_new)
+        x_new = self.decode(x_new)
+        return self.func(x_new) + x
 
 
 class Coder(nn.Module):
     def __init__(self, args, mode):
         super().__init__()
-        layer = Layer(args.device, args.pred_len, args.embed_dim, mode)
+        layer = Layer(args.device, args.pred_len, args.embed_dim, mode, args.dropout)
         self.layer_list = nn.ModuleList([copy.deepcopy(layer) for _ in range(args.layer_num)])
 
     def forward(self, x):

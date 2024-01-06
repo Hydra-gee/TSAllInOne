@@ -21,7 +21,6 @@ class PRNet:
             self.model = torch.load('files/networks/' + args.dataset + '_' + str(args.pred_len) + '.pth').to(args.device)
         else:
             self.model = Model(args).to(args.device)
-        self.optimizer = torch.optim.AdamW(self.model.parameters(), lr=self.args.learning_rate, weight_decay=1e-5)
         self.mse_func = torch.nn.MSELoss()
         self.mae_func = lambda x, y: torch.mean((torch.abs(x-y)))
 
@@ -34,6 +33,7 @@ class PRNet:
         print('Total Epochs:', self.args.epochs)
         train_loader = self._get_data('train')
         valid_loader = self._get_data('valid')
+        optimizer = torch.optim.AdamW(self.model.parameters(), lr=self.args.learning_rate, weight_decay=1e-5)
         patient_epoch = 0
         for epoch in range(self.args.epochs):
             print('Epoch', epoch + 1)
@@ -45,12 +45,12 @@ class PRNet:
                 avg = torch.mean(x, dim=1, keepdim=True)
                 x = x - avg
                 y = y - avg
-                self.optimizer.zero_grad()
+                optimizer.zero_grad()
                 season, trend = self.model(x)
-                loss = self.mse_func(season + trend, y)  # + self.mse_func(trend, y - season)
+                loss = self.mse_func(season + trend, y)
                 train_loss += loss.item()
                 loss.backward()
-                self.optimizer.step()
+                optimizer.step()
                 batch_num += 1
             end_time = time.time()
             print('Training Time', round(end_time - start_time, 2))
