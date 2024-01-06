@@ -41,7 +41,7 @@ class PRNet:
             self.model.train()
             start_time = time.time()
             batch_num, train_loss = 0, 0
-            for i, (x, y) in enumerate(train_loader):
+            for _, (x, y) in enumerate(train_loader):
                 avg = torch.mean(x, dim=1, keepdim=True)
                 x = x - avg
                 y = y - avg
@@ -58,7 +58,7 @@ class PRNet:
             # validation
             self.model.eval()
             batch_num, valid_loss = 0, 0
-            for i, (x, y) in enumerate(valid_loader):
+            for _, (x, y) in enumerate(valid_loader):
                 avg = torch.mean(x, dim=1, keepdim=True)
                 x = x - avg
                 season, trend = self.model(x)
