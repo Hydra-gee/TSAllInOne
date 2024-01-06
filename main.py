@@ -1,11 +1,9 @@
 import argparse
 import torch.cuda
 
-import model
+from model import PRNet
 
-# 变量名标识说明
-# l:length 表示时间方向上的长度
-# d:dimension 表示不同属性方向上的维度
+
 hyper_para = argparse.ArgumentParser()
 # Basic Settings
 hyper_para.add_argument('-cuda_id', type=int, default=0)
@@ -38,8 +36,7 @@ if torch.cuda.is_available():
 else:
     args.device = torch.device('cpu')
 
-
-process = model.PRNet(args)
-process.count_parameter()
-process.train()
-process.test()
+model = PRNet(args)
+model.count_parameter()
+model.train()
+model.test()
