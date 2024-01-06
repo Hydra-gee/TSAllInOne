@@ -1,5 +1,4 @@
 import time
-
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
@@ -33,7 +32,7 @@ class PRNet:
         print('Total Epochs:', self.args.epochs)
         train_loader = self._get_data('train')
         valid_loader = self._get_data('valid')
-        optimizer = torch.optim.AdamW(self.model.parameters(), lr=self.args.learning_rate, weight_decay=1e-5)
+        optimizer = torch.optim.AdamW(self.model.parameters(), lr=self.args.learning_rate)
         patient_epoch = 0
         for epoch in range(self.args.epochs):
             print('Epoch', epoch + 1)
@@ -53,7 +52,7 @@ class PRNet:
                 optimizer.step()
                 batch_num += 1
             end_time = time.time()
-            print('Training Time', round(end_time - start_time, 2))
+            print('Training Time', round(end_time - start_time, 2), 's')
             print('Training Loss (MSE): ', round(train_loss / batch_num, 4))
             # validation
             self.model.eval()
@@ -72,7 +71,7 @@ class PRNet:
                 patient_epoch = 0
             else:
                 patient_epoch += 1
-            if patient_epoch >= self.args.patience:
+            if patient_epoch > self.args.patience:
                 print('Early Stop!')
                 break
 

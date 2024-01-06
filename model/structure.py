@@ -29,7 +29,7 @@ class Net(nn.Module):
         self.mode = mode
         self.individual = args.individual
         self.pred_len = args.pred_len
-        self.embed_layer = nn.Linear(args.pred_len, args.pred_len)
+        self.input_layer = nn.Sequential(nn.Linear(args.seg_num, args.seg_num), nn.Dropout(args.dropout))
         if args.individual:
             self.coder = nn.ModuleList([unit.Coder(args, mode) for _ in range(args.channel_dim)])
             self.generator = nn.ModuleList([unit.Generator(args.seg_num) for _ in range(args.channel_dim)])
@@ -38,8 +38,8 @@ class Net(nn.Module):
             self.generator = unit.Generator(args.seg_num, args.dropout)
 
     def forward(self, x):
-        x = self.embed_layer(x)
         # batch * dim * num * len
+        x = self.input_layer(x.transpose(-1, -2)).transpose(-1, -2)
         if self.individual:
             y = []
             for i in range(x.shape[1]):
