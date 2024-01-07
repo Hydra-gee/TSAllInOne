@@ -12,9 +12,9 @@ This repository only contains the code of PRNet, with seven datasets.
 |   ETTh   |  17420  |  7   |   2   |
 |   ETTm   |  69680  |  7   |   2   |
 | Exchange |  7588   |  8   |   1   |
-|   QPS   |  30240  |  1   |  10   |
-|  Solar  |  52560  | 137  |   1   |
-| Traffic |  17544  | 862  |   1   |
+|   QPS    |  30240  |  10  |   1   |
+|  Solar   |  52560  | 137  |   1   |
+| Traffic  |  17544  | 862  |   1   |
 | Weather  |  26064  |  1   |   1   |
 
 ## Run

@@ -4,7 +4,7 @@ import torch
 from torch.utils.data import DataLoader
 
 from data_loader import *
-from model.structure import Model
+from model.model import Model
 
 
 class PRNet:
@@ -23,8 +23,8 @@ class PRNet:
         self.mse_func = torch.nn.MSELoss()
         self.mae_func = lambda x, y: torch.mean((torch.abs(x-y)))
 
-    def _get_data(self, flag='train'):
-        dataset = self.dict[self.args.dataset](self.args.device, self.args.pred_len, self.seq_len, self.args.channel_dim, flag)
+    def _get_data(self, mode):
+        dataset = self.dict[self.args.dataset](self.args.device, self.args.pred_len, self.seq_len, self.args.channel_dim, mode)
         dataset = DataLoader(dataset, batch_size=self.args.batch_size, shuffle=True)
         return dataset
 

@@ -8,7 +8,7 @@ hyper_para = argparse.ArgumentParser()
 # Basic Settings
 hyper_para.add_argument('-cuda_id', type=int, default=0)
 hyper_para.add_argument('-batch_size', type=int, default=64)
-hyper_para.add_argument('-epochs', type=int, default=50)
+hyper_para.add_argument('-epochs', type=int, default=100)
 hyper_para.add_argument('-learning_rate', type=float, default=1e-3)
 hyper_para.add_argument('-patience', type=int, default=10, help='Early Stopping')
 # Dataset Settings

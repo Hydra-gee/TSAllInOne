@@ -75,6 +75,16 @@ class Exchange(TimeSeries):
         self._split(mode)
 
 
+class QPS(TimeSeries):
+    def __init__(self, device, pred_len, seq_len, channel_dim, mode='train'):
+        super().__init__(pred_len, seq_len)
+        dataset = pd.read_csv('dataset/QPS.csv')
+        assert channel_dim < dataset.shape[1]
+        self.data = torch.tensor(dataset.iloc[:, 1:].values, device=device, dtype=torch.float32)
+        self._normalize()
+        self._split(mode)
+
+
 class Solar(TimeSeries):
     def __init__(self, device, pred_len, seq_len, channel_dim, mode='train'):
         super().__init__(pred_len, seq_len)
@@ -101,15 +111,5 @@ class Weather(TimeSeries):
         dataset = pd.read_csv('dataset/weather.csv', encoding='ISO-8859-1')
         assert channel_dim == 1
         self.data = torch.tensor(dataset.iloc[:, -1:].values, device=device, dtype=torch.float32)
-        self._normalize()
-        self._split(mode)
-
-
-class QPS(TimeSeries):
-    def __init__(self, device, pred_len, seq_len, channel_dim, mode='train'):
-        super().__init__(pred_len, seq_len)
-        dataset = pd.read_csv('dataset/QPS.csv')
-        assert channel_dim < dataset.shape[1]
-        self.data = torch.tensor(dataset.iloc[:, 1:].values, device=device, dtype=torch.float32)
         self._normalize()
         self._split(mode)
