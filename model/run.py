@@ -32,10 +32,9 @@ class PRNet:
         print('Total Epochs:', self.args.epochs)
         train_loader = self._get_data('train')
         valid_loader = self._get_data('valid')
-        optimizer = torch.optim.AdamW(self.model.parameters(), lr=self.args.learning_rate)
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=self.args.learning_rate)
         patient_epoch = 0
         for epoch in range(self.args.epochs):
-            print('Epoch', epoch + 1)
             # training
             self.model.train()
             start_time = time.time()
@@ -52,8 +51,7 @@ class PRNet:
                 optimizer.step()
                 batch_num += 1
             end_time = time.time()
-            print('Training Time', round(end_time - start_time, 2), 's')
-            print('Training Loss (MSE): ', round(train_loss / batch_num, 4))
+            train_loss /= batch_num
             # validation
             self.model.eval()
             batch_num, valid_loss = 0, 0
@@ -64,14 +62,15 @@ class PRNet:
                 loss = self.mse_func(season + trend + avg, y)
                 valid_loss += loss.item()
                 batch_num += 1
-            print('Validation Loss (MSE): ', round(valid_loss / batch_num, 4))
+            valid_loss /= batch_num
+            print('Epoch', epoch + 1, '\tTime: ', round(end_time - start_time, 2), '\tTrain MSE:', round(train_loss, 4), '\tValid MSE:', round(valid_loss, 4))
             if valid_loss < self.best_valid:
                 torch.save(self.model, 'files/networks/' + self.args.dataset + '_' + str(self.args.pred_len) + '.pth')
                 self.best_valid = valid_loss
                 patient_epoch = 0
             else:
                 patient_epoch += 1
-            if patient_epoch > self.args.patience:
+            if patient_epoch == self.args.patience:
                 print('Early Stop!')
                 break
 
@@ -88,7 +87,7 @@ class PRNet:
             mse_loss += self.mse_func(output, y).item()
             mae_loss += self.mae_func(output, y).item()
             batch_num += 1
-        print('Test Loss')
+        print(self.args.dataset, 'Test Loss')
         print('MSE: ', round(mse_loss / batch_num, 4))
         print('MAE: ', round(mae_loss / batch_num, 4))
 

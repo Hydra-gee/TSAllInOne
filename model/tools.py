@@ -1,4 +1,5 @@
 import torch
+import torch.nn as nn
 
 
 def decomposition(x, kernel_len):
@@ -18,3 +19,13 @@ def segmentation(x, kernel_len, stride):
     assert (x.shape[1] - kernel_len) % stride == 0
     x = x.transpose(1, 2)
     return x.unfold(-1, kernel_len, stride)  # batch * dim * patch_num * kernel_len
+
+
+class Transpose(nn.Module):
+    def __init__(self, dim1, dim2):
+        super().__init__()
+        self.dim1 = dim1
+        self.dim2 = dim2
+
+    def forward(self, x):
+        return x.transpose(self.dim1, self.dim2)

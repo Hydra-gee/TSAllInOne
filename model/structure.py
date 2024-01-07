@@ -1,8 +1,7 @@
-import torch
 import torch.nn as nn
 
 import model.units as unit
-from model.tools import decomposition, segmentation
+from model.tools import decomposition, segmentation, Transpose
 
 
 class Model(nn.Module):
@@ -26,28 +25,18 @@ class Model(nn.Module):
 class Net(nn.Module):
     def __init__(self, args, mode):
         super().__init__()
-        self.mode = mode
-        self.individual = args.individual
-        self.pred_len = args.pred_len
-        self.input_layer = nn.Sequential(nn.Linear(args.seg_num, args.seg_num), nn.Dropout(args.dropout))
-        if args.individual:
-            self.coder = nn.ModuleList([unit.Coder(args, mode) for _ in range(args.channel_dim)])
-            self.generator = nn.ModuleList([unit.Generator(args.seg_num) for _ in range(args.channel_dim)])
+        if args.spatial:
+            self.spatial_layer = nn.Sequential(Transpose(-1, -3), nn.Linear(args.channel_dim, args.channel_dim), nn.Dropout(args.dropout), Transpose(-1, -3))
         else:
-            self.coder = unit.Coder(args, mode)
-            self.generator = unit.Generator(args.seg_num, args.dropout)
+            self.spatial_layer = nn.Sequential()
+        self.input_layer = nn.Sequential(Transpose(-1, -2), nn.Linear(args.seg_num, args.seg_num), nn.Dropout(args.dropout), Transpose(-1, -2))
+        self.coder = unit.Coder(args, mode)  # mode: season or trend
+        self.generator = unit.Generator(args.seg_num, args.dropout)
 
     def forward(self, x):
         # batch * dim * num * len
-        x = self.input_layer(x.transpose(-1, -2)).transpose(-1, -2)
-        if self.individual:
-            y = []
-            for i in range(x.shape[1]):
-                tmp = self.coder[i](x[:, i:i + 1])
-                tmp = self.generator[i](tmp)
-                y.append(tmp)
-            x = torch.cat(y, dim=-1)
-        else:
-            x = self.coder(x)
-            x = self.generator(x)
+        x = self.spatial_layer(x)
+        x = self.input_layer(x)
+        x = self.coder(x)
+        x = self.generator(x)
         return x
