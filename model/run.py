@@ -13,7 +13,7 @@ class PRNet:
         self.dict = {'ECL': ECL, 'ETTh': ETTh, 'ETTm': ETTm, 'Exchange': Exchange, 'QPS': QPS, 'Solar': Solar, 'Traffic': Traffic, 'Weather': Weather}
         print('Dataset:', args.dataset)
         print('Prediction Length:', args.pred_len)
-        self.seq_len = args.pred_len * args.scale
+        self.seq_len = args.seq_len
         self.best_valid = np.Inf
         self.best_epoch = 0
         if load:
@@ -21,12 +21,11 @@ class PRNet:
         else:
             self.model = Model(args).to(args.device)
         self.mse_func = torch.nn.MSELoss()
-        self.mae_func = lambda x, y: torch.mean((torch.abs(x-y)))
+        self.mae_func = lambda x, y: torch.mean((torch.abs(x - y)))
 
     def _get_data(self, mode):
         dataset = self.dict[self.args.dataset](self.args.device, self.args.pred_len, self.seq_len, self.args.channel_dim, mode)
-        dataset = DataLoader(dataset, batch_size=self.args.batch_size, shuffle=True)
-        return dataset
+        return DataLoader(dataset, batch_size=self.args.batch_size, shuffle=True)
 
     def train(self):
         print('Total Epochs:', self.args.epochs)
@@ -63,7 +62,8 @@ class PRNet:
                 valid_loss += loss.item()
                 batch_num += 1
             valid_loss /= batch_num
-            print('Epoch', epoch + 1, '\tTime: ', round(end_time - start_time, 2), '\tTrain MSE:', round(train_loss, 4), '\tValid MSE:', round(valid_loss, 4))
+            if epoch % 5 == 4:
+                print('Epoch', epoch + 1, '\tTrain MSE:', round(train_loss, 4), '\tValid MSE:', round(valid_loss, 4))
             if valid_loss < self.best_valid:
                 torch.save(self.model, 'files/networks/' + self.args.dataset + '_' + str(self.args.pred_len) + '.pth')
                 self.best_valid = valid_loss
