@@ -14,7 +14,7 @@ hyper_para.add_argument('-patience', type=int, default=10, help='Early Stopping'
 # Dataset Settings
 hyper_para.add_argument('-dataset', type=str, default='Weather')
 hyper_para.add_argument('-pred_scale', type=float, default=1)
-channel_dims = {'ECL': 370, 'ETTh': 7, 'ETTm': 7, 'Exchange': 8, 'QPS': 10, 'Solar': 137, 'Traffic': 862, 'Weather': 1}  # dimensions of datasets
+channel_dims = {'ECL': 370, 'ETTh': 14, 'ETTm': 14, 'Exchange': 8, 'QPS': 10, 'Solar': 137, 'Traffic': 862, 'Weather': 20}  # dimensions of datasets
 seg_lens = {'ECL': 96, 'ETTh': 24, 'ETTm': 96, 'Exchange': 30, 'QPS': 60, 'Solar': 144, 'Traffic': 24, 'Weather': 144}  # lengths of patches
 # Model Settings
 hyper_para.add_argument('-layer_num', type=int, default=2, help='Number of Attention Layers')
