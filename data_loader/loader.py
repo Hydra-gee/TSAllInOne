@@ -108,7 +108,7 @@ class Traffic(TimeSeries):
 class Weather(TimeSeries):
     def __init__(self, device, pred_len, seq_len, channel_dim, mode='train'):
         super().__init__(pred_len, seq_len)
-        dataset = pd.read_csv('dataset/weather.csv', encoding='ISO-8859-1')
+        dataset = pd.read_csv('dataset/weather.csv')
         assert channel_dim == 1
         self.data = torch.tensor(dataset.iloc[:, -1:].values, device=device, dtype=torch.float32)
         self._normalize()
