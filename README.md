@@ -49,9 +49,16 @@ The `data_loader` loads the datasets, `model` contains the code of PRNet, and `f
 <tr>
 <td>ETTm</td><td>96</td>
 <td>0.2012</td><td>0.2978</td>
+<td>0.2401</td><td>0.3293</td>
+<td>0.2772</td><td>0.3632</td>
+<td>0.3354</td><td>0.4057</td>
 </tr>
 <tr>
 <td>Exchange</td><td>30</td>
+<td>0.0204</td><td>0.0996</td>
+<td>0.0386</td><td>0.1360</td>
+<td>0.0635</td><td>0.1776</td>
+<td>0.1332</td><td>0.2622</td>
 </tr>
 <tr>
 <td>QPS</td><td>60</td>

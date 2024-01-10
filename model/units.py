@@ -7,9 +7,8 @@ from model.attention import Attention
 class Layer(nn.Module):
     def __init__(self, device, patch_len, mode, dropout=0):
         super().__init__()
-        embed_dim = min(patch_len // 2, 48)
-        self.encode = nn.Sequential(nn.Linear(patch_len, embed_dim), nn.Dropout(dropout))
-        self.decode = nn.Sequential(nn.Linear(embed_dim, patch_len), nn.Dropout(dropout))
+        self.encode = nn.Sequential(nn.Linear(patch_len, patch_len), nn.Dropout(dropout))
+        self.decode = nn.Sequential(nn.Linear(patch_len, patch_len), nn.Dropout(dropout))
         self.attn = Attention(device, mode)
         self.func = nn.LeakyReLU(0.2)
 

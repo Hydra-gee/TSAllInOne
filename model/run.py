@@ -6,7 +6,7 @@ from model.model import Model
 
 
 class PRNet:
-    def __init__(self, args, load=False):
+    def __init__(self, args):
         self.args = args
         self.dict = {
             'Electricity': Electricity,
@@ -21,7 +21,7 @@ class PRNet:
         self.seq_len = args.seq_len
         self.best_valid = float('Inf')
         self.best_epoch = 0
-        if load:
+        if args.load == 'True':
             self.model = torch.load('files/networks/' + args.dataset + '_' + str(args.pred_len) + '.pth').to(args.device)
         else:
             self.model = Model(args).to(args.device)
