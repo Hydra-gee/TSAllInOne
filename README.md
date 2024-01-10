@@ -22,6 +22,7 @@ The `data_loader` loads the datasets, `model` contains the code of PRNet, and `f
 <thead>
 <tr>
 <th rowspan="2">Dataset</th>
+<th rowspan="2">L</th>
 <th colspan="2">1</th>
 <th colspan="2">2</th>
 <th colspan="2">3.5</th>
@@ -36,32 +37,33 @@ The `data_loader` loads the datasets, `model` contains the code of PRNet, and `f
 </thead>
 <tbody>
 <tr>
-<td>Electricity</td>
+<td>Electricity</td><td>96</td>
 </tr>
 <tr>
-<td>ETTh</td>
+<td>ETTh</td><td>24</td>
 <td>0.2139</td><td>0.3078</td>
 <td>0.2463</td><td>0.3333</td>
 <td>0.2834</td><td>0.3643</td>
 <td>0.2463</td><td>0.3333</td>
 </tr>
 <tr>
-<td>ETTm</td>
+<td>ETTm</td><td>96</td>
+<td>0.2012</td><td>0.2978</td>
 </tr>
 <tr>
-<td>Exchange</td>
+<td>Exchange</td><td>30</td>
 </tr>
 <tr>
-<td>QPS</td>
+<td>QPS</td><td>60</td>
 </tr>
 <tr>
-<td>Solar</td>
+<td>Solar</td><td>288</td>
 </tr>
 <tr>
-<td>Traffic</td>
+<td>Traffic</td><td>24</td>
 </tr>
 <tr>
-<td>Weather</td>
+<td>Weather</td><td>144</td>
 </tr>
 </tbody>
 </table>
