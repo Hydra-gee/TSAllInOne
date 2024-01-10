@@ -32,6 +32,29 @@ class PRNet:
         dataset = self.dict[self.args.dataset](self.args.device, self.args.pred_len, self.seq_len, self.args.dim, mode)
         return DataLoader(dataset, batch_size=self.args.batch_size, shuffle=True)
 
+    def _train_model(self, loader, optimizer):
+        self.model.train()
+        batch_num, train_loss = 0, 0
+        for _, (x, y) in enumerate(loader):
+            optimizer.zero_grad()
+            season, trend = self.model(x)
+            loss = self.mse_func(season + trend, y)
+            train_loss += loss.item()
+            loss.backward()
+            optimizer.step()
+            batch_num += 1
+        return train_loss / batch_num
+
+    def _eval_model(self, loader):
+        self.model.eval()
+        batch_num, mse_loss, mae_loss = 0, 0, 0
+        for _, (x, y) in enumerate(loader):
+            season, trend = self.model(x)
+            mse_loss += self.mse_func(season + trend, y).item()
+            mae_loss += self.mae_func(season + trend, y).item()
+            batch_num += 1
+        return mse_loss / batch_num, mae_loss / batch_num
+
     def train(self):
         print('Total Epochs:', self.args.epochs)
         train_loader = self._get_data('train')
@@ -39,28 +62,9 @@ class PRNet:
         optimizer = torch.optim.Adam(self.model.parameters(), lr=self.args.learning_rate)
         patient_epoch = 0
         for epoch in range(self.args.epochs):
-            # training
-            self.model.train()
-            batch_num, train_loss = 0, 0
-            for _, (x, y) in enumerate(train_loader):
-                optimizer.zero_grad()
-                season, trend = self.model(x)
-                loss = self.mse_func(season + trend, y)
-                train_loss += loss.item()
-                loss.backward()
-                optimizer.step()
-                batch_num += 1
-            train_loss /= batch_num
-            # validation
-            self.model.eval()
-            batch_num, valid_loss = 0, 0
-            for _, (x, y) in enumerate(valid_loader):
-                season, trend = self.model(x)
-                loss = self.mse_func(season + trend, y)
-                valid_loss += loss.item()
-                batch_num += 1
-            valid_loss /= batch_num
-            print('Epoch', epoch + 1, '\tTrain MSE:', round(train_loss, 4), '\tValid MSE:', round(valid_loss, 4))
+            train_loss = self._train_model(train_loader, optimizer)
+            valid_loss, _ = self._eval_model(valid_loader)
+            print('Epoch', epoch + 1, '\tTrain:', round(train_loss, 4), '\tValid:', round(valid_loss, 4))
             if valid_loss < self.best_valid:
                 torch.save(self.model, 'files/networks/' + self.args.dataset + '_' + str(self.args.pred_len) + '.pth')
                 self.best_valid = valid_loss
@@ -74,17 +78,10 @@ class PRNet:
     def test(self):
         self.model = torch.load('files/networks/' + self.args.dataset + '_' + str(self.args.pred_len) + '.pth').to(self.args.device)
         test_loader = self._get_data('test')
-        batch_num, mse_loss, mae_loss = 0, 0, 0
-        self.model.eval()
-        for i, (x, y) in enumerate(test_loader):
-            season, trend = self.model(x)
-            output = season + trend
-            mse_loss += self.mse_func(output, y).item()
-            mae_loss += self.mae_func(output, y).item()
-            batch_num += 1
+        mse_loss, mae_loss = self._eval_model(test_loader)
         print(self.args.dataset, 'Test Loss')
-        print('MSE: ', round(mse_loss / batch_num, 4))
-        print('MAE: ', round(mae_loss / batch_num, 4))
+        print('MSE: ', round(mse_loss, 4))
+        print('MAE: ', round(mae_loss, 4))
 
     def count_parameter(self):
         total = sum([param.nelement() for param in self.model.parameters()])
