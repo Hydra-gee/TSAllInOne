@@ -28,11 +28,6 @@ class Model(nn.Module):
 class Net(nn.Module):
     def __init__(self, args, mode):
         super().__init__()
-        if args.spatial:
-            self.spatial_layer = nn.Sequential(
-                Transpose(-1, -3), nn.Linear(args.dim, args.dim), nn.Dropout(args.dropout), Transpose(-1, -3))
-        else:
-            self.spatial_layer = nn.Sequential()
         self.input_layer = nn.Sequential(
             Transpose(-1, -2), nn.Linear(args.patch_num, args.patch_num), nn.Dropout(args.dropout), Transpose(-1, -2))
         self.coder = unit.Coder(args, mode)  # mode: season or trend
@@ -40,7 +35,6 @@ class Net(nn.Module):
 
     def forward(self, x):
         # batch * dim * num * len
-        x = self.spatial_layer(x)
         x = self.input_layer(x)
         x = self.coder(x)
         x = self.generator(x)

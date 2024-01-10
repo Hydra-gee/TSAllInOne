@@ -18,9 +18,6 @@ class PRNet:
             'Weather': Weather
         }
         print('Dataset:', args.dataset, 'Prediction Length:', args.pred_len)
-        self.seq_len = args.seq_len
-        self.best_valid = float('Inf')
-        self.best_epoch = 0
         if args.load == 'True':
             self.model = torch.load('files/networks/' + args.dataset + '_' + str(args.pred_len) + '.pth').to(args.device)
         else:
@@ -29,7 +26,7 @@ class PRNet:
         self.mae_func = lambda x, y: torch.mean((torch.abs(x - y)))
 
     def _get_data(self, mode):
-        dataset = self.dict[self.args.dataset](self.args.device, self.args.pred_len, self.seq_len, self.args.dim, mode)
+        dataset = self.dict[self.args.dataset](self.args.device, self.args.pred_len, self.args.seq_len, self.args.dim, mode)
         return DataLoader(dataset, batch_size=self.args.batch_size, shuffle=True)
 
     def _train_model(self, loader, optimizer):
@@ -60,18 +57,19 @@ class PRNet:
         train_loader = self._get_data('train')
         valid_loader = self._get_data('valid')
         optimizer = torch.optim.Adam(self.model.parameters(), lr=self.args.learning_rate)
-        patient_epoch = 0
+        patience, best_valid = 0, float('Inf')
         for epoch in range(self.args.epochs):
             train_loss = self._train_model(train_loader, optimizer)
             valid_loss, _ = self._eval_model(valid_loader)
-            print('Epoch', epoch + 1, '\tTrain:', round(train_loss, 4), '\tValid:', round(valid_loss, 4))
-            if valid_loss < self.best_valid:
+
+            if valid_loss < best_valid:
                 torch.save(self.model, 'files/networks/' + self.args.dataset + '_' + str(self.args.pred_len) + '.pth')
-                self.best_valid = valid_loss
-                patient_epoch = 0
+                best_valid = valid_loss
+                patience = 0
             else:
-                patient_epoch += 1
-            if patient_epoch == self.args.patience:
+                patience += 1
+            print('Epoch', '%02d' % (epoch + 1), 'Train:', round(train_loss, 4), '\tValid:', round(valid_loss, 4), patience, round(best_valid, 4))
+            if patience == self.args.patience:
                 print('Early Stop!')
                 break
 

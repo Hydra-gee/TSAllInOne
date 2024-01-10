@@ -5,10 +5,10 @@ from model.attention import Attention
 
 
 class Layer(nn.Module):
-    def __init__(self, device, patch_len, mode, dropout=0):
+    def __init__(self, device, patch_len, embed_dim, mode, dropout=0):
         super().__init__()
-        self.encode = nn.Sequential(nn.Linear(patch_len, patch_len), nn.Dropout(dropout))
-        self.decode = nn.Sequential(nn.Linear(patch_len, patch_len), nn.Dropout(dropout))
+        self.encode = nn.Sequential(nn.Linear(patch_len, embed_dim), nn.Dropout(dropout))
+        self.decode = nn.Sequential(nn.Linear(embed_dim, patch_len), nn.Dropout(dropout))
         self.attn = Attention(device, mode)
         self.func = nn.LeakyReLU(0.2)
 
@@ -22,7 +22,7 @@ class Layer(nn.Module):
 class Coder(nn.Module):
     def __init__(self, args, mode):
         super().__init__()
-        layer = Layer(args.device, args.patch_len, mode, args.dropout)
+        layer = Layer(args.device, args.patch_len, args.embed_dim, mode, args.dropout)
         self.layer_list = nn.ModuleList([copy.deepcopy(layer) for _ in range(args.layer_num)])
 
     def forward(self, x):
@@ -35,7 +35,8 @@ class Coder(nn.Module):
 class Generator(nn.Module):
     def __init__(self, args):
         super().__init__()
-        self.proj_layer = nn.Sequential(nn.Linear(args.patch_len, args.pred_len), nn.Dropout(args.dropout))
+        self.proj_layer = nn.Sequential(nn.Linear(args.patch_len, args.embed_dim), nn.Dropout(args.dropout), nn.LeakyReLU(0.2),
+                                        nn.Linear(args.embed_dim, args.pred_len), nn.Dropout(args.dropout))
         self.out_layer = nn.Sequential(nn.Linear(args.patch_num, 1), nn.Dropout(args.dropout))
 
     def forward(self, x):
