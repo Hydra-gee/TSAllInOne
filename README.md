@@ -23,10 +23,10 @@ The `data_loader` loads the datasets, `model` contains the code of PRNet, and `f
 <tr>
 <th rowspan="2">Dataset</th>
 <th rowspan="2">L</th>
-<th colspan="2">1</th>
-<th colspan="2">2</th>
-<th colspan="2">3.5</th>
-<th colspan="2">7.5</th>
+<th colspan="2">L</th>
+<th colspan="2">2L</th>
+<th colspan="2">3.5L</th>
+<th colspan="2">7.5L</th>
 </tr>
 <tr>
 <th>MSE</th><th>MAE</th>
@@ -41,33 +41,41 @@ The `data_loader` loads the datasets, `model` contains the code of PRNet, and `f
 </tr>
 <tr>
 <td>ETTh</td><td>24</td>
-<td>0.2139</td><td>0.3078</td>
-<td>0.2463</td><td>0.3333</td>
-<td>0.2834</td><td>0.3643</td>
-<td>0.2463</td><td>0.3333</td>
+<td>0.2134</td><td>0.3046</td>
+<td>0.2458</td><td>0.3301</td>
+<td>0.2834</td><td>0.3576</td>
+<td>0.3328</td><td>0.3969</td>
 </tr>
 <tr>
 <td>ETTm</td><td>96</td>
-<td>0.2012</td><td>0.2978</td>
-<td>0.2401</td><td>0.3293</td>
-<td>0.2772</td><td>0.3632</td>
-<td>0.3354</td><td>0.4057</td>
+<td>0.2052</td><td>0.2988</td>
+<td>0.2437</td><td>0.3291</td>
+<td>0.2813</td><td>0.3571</td>
+<td>0.3366</td><td>0.3987</td>
 </tr>
 <tr>
 <td>Exchange</td><td>30</td>
-<td>0.0204</td><td>0.0996</td>
-<td>0.0386</td><td>0.1360</td>
-<td>0.0635</td><td>0.1776</td>
-<td>0.1332</td><td>0.2622</td>
+<td>0.0204</td><td>0.0961</td>
+<td>0.0371</td><td>0.1326</td>
+<td>0.0630</td><td>0.1765</td>
+<td>0.1357</td><td>0.2635</td>
 </tr>
 <tr>
 <td>QPS</td><td>60</td>
+<td>0.0299</td><td>0.0992</td>
+<td>0.0583</td><td>0.1474</td>
+<td>0.1294</td><td>0.2297</td>
+<td>0.3233</td><td>0.3853</td>
 </tr>
 <tr>
 <td>Solar</td><td>288</td>
 </tr>
 <tr>
 <td>Traffic</td><td>24</td>
+<td>0.3239</td><td>0.3007</td>
+<td>0.3541</td><td>0.3226</td>
+<td>0.3781</td><td>0.3380</td>
+<td>0.3794</td><td>0.3365</td>
 </tr>
 <tr>
 <td>Weather</td><td>144</td>
