@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 
 import model.units as unit
@@ -7,29 +8,33 @@ from model.tools import decomposition, segmentation, Transpose
 class Model(nn.Module):
     def __init__(self, args):
         super().__init__()
-        self.seg_len = args.seg_len
-        self.seg_num = args.seg_num
-        self.season_model = Net(args, 'season')
-        self.trend_model = Net(args, 'trend')
+        self.patch_len = args.patch_len
+        self.patch_num = args.patch_num
+        self.season_net = Net(args, 'season')
+        self.trend_net = Net(args, 'trend')
 
     def forward(self, x):
-        res, avg = decomposition(x, self.seg_len // 2)
-        stride = (x.shape[1] - self.seg_len) // (self.seg_num - 1)
-        res = segmentation(res, self.seg_len, stride)
-        avg = segmentation(avg, self.seg_len, stride)
-        res = self.season_model(res)
-        avg = self.trend_model(avg)
-        return res, avg
+        bias = torch.mean(x, dim=1, keepdim=True)
+        x = x - bias
+        res, avg = decomposition(x, self.patch_len // 2)
+        stride = (x.shape[1] - self.patch_len) // (self.patch_num - 1)
+        res = segmentation(res, self.patch_len, stride)
+        avg = segmentation(avg, self.patch_len, stride)
+        res = self.season_net(res)
+        avg = self.trend_net(avg)
+        return res, avg + bias
 
 
 class Net(nn.Module):
     def __init__(self, args, mode):
         super().__init__()
         if args.spatial:
-            self.spatial_layer = nn.Sequential(Transpose(-1, -3), nn.Linear(args.channel_dim, args.channel_dim), nn.Dropout(args.dropout), Transpose(-1, -3))
+            self.spatial_layer = nn.Sequential(
+                Transpose(-1, -3), nn.Linear(args.dim, args.dim), nn.Dropout(args.dropout), Transpose(-1, -3))
         else:
             self.spatial_layer = nn.Sequential()
-        self.input_layer = nn.Sequential(Transpose(-1, -2), nn.Linear(args.seg_num, args.seg_num), nn.Dropout(args.dropout), Transpose(-1, -2))
+        self.input_layer = nn.Sequential(
+            Transpose(-1, -2), nn.Linear(args.patch_num, args.patch_num), nn.Dropout(args.dropout), Transpose(-1, -2))
         self.coder = unit.Coder(args, mode)  # mode: season or trend
         self.generator = unit.Generator(args)
 

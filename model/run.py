@@ -1,5 +1,3 @@
-import time
-import numpy as np
 import torch
 from torch.utils.data import DataLoader
 
@@ -10,11 +8,18 @@ from model.model import Model
 class PRNet:
     def __init__(self, args, load=False):
         self.args = args
-        self.dict = {'ECL': ECL, 'ETTh': ETTh, 'ETTm': ETTm, 'Exchange': Exchange, 'QPS': QPS, 'Solar': Solar, 'Traffic': Traffic, 'Weather': Weather}
-        print('Dataset:', args.dataset)
-        print('Prediction Length:', args.pred_len)
+        self.dict = {
+            'Electricity': Electricity,
+            'ETTh': ETTh, 'ETTm': ETTm,
+            'Exchange': Exchange,
+            'QPS': QPS,
+            'Solar': Solar,
+            'Traffic': Traffic,
+            'Weather': Weather
+        }
+        print('Dataset:', args.dataset, 'Prediction Length:', args.pred_len)
         self.seq_len = args.seq_len
-        self.best_valid = np.Inf
+        self.best_valid = float('Inf')
         self.best_epoch = 0
         if load:
             self.model = torch.load('files/networks/' + args.dataset + '_' + str(args.pred_len) + '.pth').to(args.device)
@@ -24,7 +29,7 @@ class PRNet:
         self.mae_func = lambda x, y: torch.mean((torch.abs(x - y)))
 
     def _get_data(self, mode):
-        dataset = self.dict[self.args.dataset](self.args.device, self.args.pred_len, self.seq_len, self.args.channel_dim, mode)
+        dataset = self.dict[self.args.dataset](self.args.device, self.args.pred_len, self.seq_len, self.args.dim, mode)
         return DataLoader(dataset, batch_size=self.args.batch_size, shuffle=True)
 
     def train(self):
@@ -36,12 +41,8 @@ class PRNet:
         for epoch in range(self.args.epochs):
             # training
             self.model.train()
-            start_time = time.time()
             batch_num, train_loss = 0, 0
             for _, (x, y) in enumerate(train_loader):
-                avg = torch.mean(x, dim=1, keepdim=True)
-                x = x - avg
-                y = y - avg
                 optimizer.zero_grad()
                 season, trend = self.model(x)
                 loss = self.mse_func(season + trend, y)
@@ -49,21 +50,17 @@ class PRNet:
                 loss.backward()
                 optimizer.step()
                 batch_num += 1
-            end_time = time.time()
             train_loss /= batch_num
             # validation
             self.model.eval()
             batch_num, valid_loss = 0, 0
             for _, (x, y) in enumerate(valid_loader):
-                avg = torch.mean(x, dim=1, keepdim=True)
-                x = x - avg
                 season, trend = self.model(x)
-                loss = self.mse_func(season + trend + avg, y)
+                loss = self.mse_func(season + trend, y)
                 valid_loss += loss.item()
                 batch_num += 1
             valid_loss /= batch_num
-            if epoch % 5 == 4:
-                print('Epoch', epoch + 1, '\tTrain MSE:', round(train_loss, 4), '\tValid MSE:', round(valid_loss, 4))
+            print('Epoch', epoch + 1, '\tTrain MSE:', round(train_loss, 4), '\tValid MSE:', round(valid_loss, 4))
             if valid_loss < self.best_valid:
                 torch.save(self.model, 'files/networks/' + self.args.dataset + '_' + str(self.args.pred_len) + '.pth')
                 self.best_valid = valid_loss
@@ -80,10 +77,8 @@ class PRNet:
         batch_num, mse_loss, mae_loss = 0, 0, 0
         self.model.eval()
         for i, (x, y) in enumerate(test_loader):
-            avg = torch.mean(x, dim=1, keepdim=True)
-            x = x - avg
             season, trend = self.model(x)
-            output = season + trend + avg
+            output = season + trend
             mse_loss += self.mse_func(output, y).item()
             mae_loss += self.mae_func(output, y).item()
             batch_num += 1
