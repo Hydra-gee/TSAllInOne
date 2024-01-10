@@ -39,7 +39,7 @@ class Electricity(TimeSeries):
         super().__init__(pred_len, seq_len)
         dataset = pd.read_csv('dataset/LD2011_2014.txt', delimiter=';')
         assert dim < dataset.shape[1]
-        self.data = torch.Tensor(dataset.iloc[:, -dim:].values, device=device)
+        self.data = torch.tensor(dataset.iloc[:, -dim:].values, device=device, dtype=torch.float32)
         self._normalize()
         self._split(mode)
 
@@ -49,7 +49,7 @@ class ETTh(TimeSeries):
         super().__init__(pred_len, seq_len)
         dataset = pd.read_csv('dataset/ETTh.csv')
         assert dim < dataset.shape[1]
-        self.data = torch.Tensor(dataset.iloc[:, -dim:].values, device=device)
+        self.data = torch.tensor(dataset.iloc[:, -dim:].values, device=device, dtype=torch.float32)
         self._normalize()
         self._split(mode)
 
@@ -59,7 +59,7 @@ class ETTm(TimeSeries):
         super().__init__(pred_len, seq_len)
         dataset = pd.read_csv('dataset/ETTm.csv')
         assert dim < dataset.shape[1]
-        self.data = torch.Tensor(dataset.iloc[:, -dim:].values, device=device)
+        self.data = torch.tensor(dataset.iloc[:, -dim:].values, device=device, dtype=torch.float32)
         self._normalize()
         self._split(mode)
 
@@ -69,7 +69,7 @@ class Exchange(TimeSeries):
         super().__init__(pred_len, seq_len)
         dataset = pd.read_csv('dataset/exchange_rate.csv', delimiter=',', header=None)
         assert dim <= dataset.shape[1]
-        self.data = torch.Tensor(dataset[:, -dim:].values, device=device)
+        self.data = torch.tensor(dataset.iloc[:, -dim:].values, device=device, dtype=torch.float32)
         self._normalize()
         self._split(mode)
 
@@ -79,7 +79,7 @@ class QPS(TimeSeries):
         super().__init__(pred_len, seq_len)
         dataset = pd.read_csv('dataset/QPS.csv')
         assert dim < dataset.shape[1]
-        self.data = torch.Tensor(dataset.iloc[:, -dim:].values, device=device)
+        self.data = torch.tensor(dataset.iloc[:, -dim:].values, device=device, dtype=torch.float32)
         self._normalize()
         self._split(mode)
 
@@ -89,7 +89,7 @@ class Solar(TimeSeries):
         super().__init__(pred_len, seq_len)
         dataset = pd.read_csv('dataset/solar_alabama.csv', delimiter=',')
         assert dim < dataset.shape[1]
-        self.data = torch.Tensor(dataset.iloc[:, -dim:].values, device=device)
+        self.data = torch.tensor(dataset.iloc[:, -dim:].values, device=device, dtype=torch.float32)
         self._normalize()
         self._split(mode)
 
@@ -99,7 +99,7 @@ class Traffic(TimeSeries):
         super().__init__(pred_len, seq_len)
         dataset = pd.read_csv('dataset/PeMS.csv', delimiter=',')
         assert dim < dataset.shape[1]
-        self.data = torch.Tensor(dataset.iloc[:, -dim:].values, device=device)
+        self.data = torch.tensor(dataset.iloc[:, -dim:].values, device=device, dtype=torch.float32)
         self._normalize()
         self._split(mode)
 
@@ -109,6 +109,6 @@ class Weather(TimeSeries):
         super().__init__(pred_len, seq_len)
         dataset = pd.read_csv('dataset/mpi_roof.csv')
         assert dim < dataset.shape[1]
-        self.data = torch.Tensor(dataset.iloc[:, -dim:].values, device=device)
+        self.data = torch.tensor(dataset.iloc[:, -dim:].values, device=device, dtype=torch.float32)
         self._normalize()
         self._split(mode)
