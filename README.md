@@ -38,6 +38,10 @@ The `data_loader` loads the datasets, `model` contains the code of PRNet, and `f
 <tbody>
 <tr>
 <td>Electricity</td><td>96</td>
+<td>0.1333</td><td>0.2263</td>
+<td>0.1572</td><td>0.2453</td>
+<td>0.1604</td><td>0.2453</td>
+<td></td><td></td>
 </tr>
 <tr>
 <td>ETTh</td><td>24</td>
