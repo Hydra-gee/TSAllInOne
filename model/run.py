@@ -61,7 +61,7 @@ class PRNet:
                 patience = 0
             else:
                 patience += 1
-            print('Epoch', '%02d' % (epoch + 1), 'Train:', round(train_loss, 4), '\tValid:', round(valid_loss, 4), patience, round(best_valid, 4))
+            print('Epoch', '%02d' % (epoch + 1), 'Train:', round(train_loss, 4), '\tValid:', round(valid_loss, 4), '\tBest:', round(best_valid, 4), '\tPtc:', patience)
             if patience == self.args.patience:
                 print('Early Stop!')
                 break
