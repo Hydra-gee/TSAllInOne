@@ -43,8 +43,8 @@ class PRNet:
         return mse_loss / len(loader), mae_loss / len(loader)
 
     def count_parameter(self):
-        total = sum([param.nelement() for param in self.model.parameters()])
-        print('Number of Parameters:', total)
+        param_num = sum([param.nelement() for param in self.model.parameters()])
+        print('Number of Parameters:', param_num)
 
     def train(self):
         print('Total Epochs:', self.args.epochs)
