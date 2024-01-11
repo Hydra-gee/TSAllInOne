@@ -16,7 +16,7 @@ Dataset Lists:
 
 ## Run
 You can run `main.py` to reproduce the experiment. It will output the amount of parameters, training time and accuracy of PRNet for you to evaluate the generality, efficiency and stability. 
-The `data_loader` loads the datasets, `model` contains the code of PRNet, and `files` saves some cases trained by ourselves.
+The `data_loader` loads the datasets, `model` contains the code of PRNet, and `files/networks` saves some cases trained by ourselves.
 
 <table>
 <thead>
@@ -86,7 +86,7 @@ The `data_loader` loads the datasets, `model` contains the code of PRNet, and `f
 
 ## Visualization
 There is also a "Visualize.py" file, which is used for visualizing the forecasting result.
-The package "files/figures" saves nine forecasting results, you can also run the trained models by yourself.
+The package `files/figures` saves nine forecasting results, you can also run the trained models by yourself.
 
 ## Contact
 If you have any questions or suggestions for our paper or codes, please contact us. Email: hanwen_hu@sjtu.edu.cn.

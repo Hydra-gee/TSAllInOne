@@ -17,7 +17,7 @@ class PRNet:
             'Traffic': Traffic,
             'Weather': Weather
         }
-        print('Dataset:', args.dataset, 'Prediction Length:', args.pred_len)
+        print('Dataset:', args.dataset, '\tPrediction Length:', args.pred_len)
         if args.load == 'True':
             self.model = torch.load('files/networks/' + args.dataset + '_' + str(args.pred_len) + '.pth').to(args.device)
         else:
@@ -31,7 +31,7 @@ class PRNet:
 
     def _train_model(self, loader, optimizer):
         self.model.train()
-        batch_num, train_loss = 0, 0
+        train_loss = 0
         for _, (x, y) in enumerate(loader):
             optimizer.zero_grad()
             season, trend = self.model(x)
@@ -39,18 +39,16 @@ class PRNet:
             train_loss += loss.item()
             loss.backward()
             optimizer.step()
-            batch_num += 1
-        return train_loss / batch_num
+        return train_loss / len(loader)
 
     def _eval_model(self, loader):
         self.model.eval()
-        batch_num, mse_loss, mae_loss = 0, 0, 0
+        mse_loss, mae_loss = 0, 0
         for _, (x, y) in enumerate(loader):
             season, trend = self.model(x)
             mse_loss += self.mse_func(season + trend, y).item()
             mae_loss += self.mae_func(season + trend, y).item()
-            batch_num += 1
-        return mse_loss / batch_num, mae_loss / batch_num
+        return mse_loss / len(loader), mae_loss / len(loader)
 
     def train(self):
         print('Total Epochs:', self.args.epochs)
@@ -61,7 +59,6 @@ class PRNet:
         for epoch in range(self.args.epochs):
             train_loss = self._train_model(train_loader, optimizer)
             valid_loss, _ = self._eval_model(valid_loader)
-
             if valid_loss < best_valid:
                 torch.save(self.model, 'files/networks/' + self.args.dataset + '_' + str(self.args.pred_len) + '.pth')
                 best_valid = valid_loss

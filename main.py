@@ -12,8 +12,8 @@ hyper_para.add_argument('-learning_rate', type=float, default=5e-4)
 hyper_para.add_argument('-patience', type=int, default=10, help='Early Stopping')
 hyper_para.add_argument('-load', type=str, default='False')
 # Dataset Settings
-hyper_para.add_argument('-dataset', type=str, default='Solar')
-hyper_para.add_argument('-pred_scale', type=float, default=1)
+hyper_para.add_argument('-dataset', type=str, default='Traffic', help='Dataset Name')
+hyper_para.add_argument('-pred_scale', type=float, default=1, help='pred_len = patch_len * pred_scale')
 dims = {'Electricity': 370, 'ETTh': 14, 'ETTm': 14, 'Exchange': 8, 'QPS': 10, 'Solar': 137, 'Traffic': 862,'Weather': 20}
 patch_lens = {'Electricity': 96, 'ETTh': 24, 'ETTm': 96, 'Exchange': 30, 'QPS': 60, 'Solar': 288, 'Traffic': 24,'Weather': 144}
 # Model Settings
