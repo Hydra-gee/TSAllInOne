@@ -99,7 +99,7 @@ Below is the experiment result.
 
 
 ## Visualization
-There is also a `visualize.py` file, which is used for visualizing the forecasting result.
+There is also a `visualize` function, which is used for visualizing the forecasting result.
 The package `files/figures` saves eight forecasting results, you can also run the trained models by yourself.
 
 ## Contact
