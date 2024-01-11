@@ -15,11 +15,10 @@ Dataset Lists:
 
 
 ## Run
-You can run `main.py` to reproduce the experiment. Below is an example of running the traffic dataset with `pred_len = 24`
+You can run `main.py` to reproduce the experiment. Below is an example of running the `Traffic` dataset with `pred_len = 24`.
 ```
-python3 main.py -cuda_id 0 -dataset Traffic -pred_scale 1
+python3 main.py -cuda_id 0 -dataset Traffic -pred_len 24
 ```
-where `pred_scale = pred_len / patch_len`.
 
 The `data_loader` loads the datasets, `model` contains the code of PRNet, and `files/networks` saves the cases trained by ourselves. 
 Below is the experiment result.
@@ -79,6 +78,7 @@ Below is the experiment result.
 </tr>
 <tr>
 <td>Solar</td><td>288</td>
+<td>0.1836</td><td>0.2421</td>
 </tr>
 <tr>
 <td>Traffic</td><td>24</td>
@@ -91,6 +91,7 @@ Below is the experiment result.
 <td>Weather</td><td>144</td>
 <td>0.3405</td><td>0.3328</td>
 <td>0.4138</td><td>0.3923</td>
+<td>0.4755</td><td>0.4386</td>
 </tr>
 </tbody>
 </table>

@@ -81,21 +81,25 @@ class PRNet:
         self.model.load_state_dict(state_dict)
         self.model.eval()
         plt.rcParams['font.sans-serif'] = ['Times New Roman']
-        index, dim = input('Index, Dimension:').split()
-        index, dim = int(index), int(dim)
-        while 0 <= index < len(dataset):
-            x, y = dataset[index]
-            season, trend = self.model(x.unsqueeze(0))
-            y_bar = (season + trend).squeeze(0)[:, dim].detach().cpu().numpy()
-            x, y = x[:, dim].detach().cpu().numpy(), y[:, dim].detach().cpu().numpy()
-            plt.figure(figsize=(8, 2.4))
-            plt.plot(range(self.args.seq_len), x)
-            plt.plot(range(self.args.seq_len, self.args.seq_len + self.args.pred_len), y, label='real')
-            plt.plot(range(self.args.seq_len, self.args.seq_len + self.args.pred_len), y_bar, label='predict')
-            plt.yticks([])
-            plt.tick_params(labelsize=20)
-            plt.xlim([0, self.args.seq_len + self.args.pred_len])
-            plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.15)
-            plt.savefig('files/figures/visual_' + self.args.dataset + '.pdf')
-            plt.show()
-            index = int(input('Index, Dimension:'))
+        dim = int(input('Visual Dimension: '))
+        index = int(input('Index:'))
+        while index >= 0:
+            if index < len(dataset):
+                x, y = dataset[index]
+                season, trend = self.model(x.unsqueeze(0))
+                y_bar = (season + trend).squeeze(0)[:, dim].detach().cpu().numpy()
+                x, y = x[:, dim].detach().cpu().numpy(), y[:, dim].detach().cpu().numpy()
+                plt.figure(figsize=(8, 2.4))
+                plt.plot(range(self.args.seq_len), x)
+                plt.plot(range(self.args.seq_len, self.args.seq_len + self.args.pred_len), y, label='real')
+                plt.plot(range(self.args.seq_len, self.args.seq_len + self.args.pred_len), y_bar, label='predict')
+                plt.legend(fontsize=20)
+                plt.yticks([])
+                plt.tick_params(labelsize=20)
+                plt.xlim([0, self.args.seq_len + self.args.pred_len])
+                plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.15)
+                plt.savefig('files/figures/visual_' + self.args.dataset + '.pdf')
+                plt.show()
+            else:
+                print('Out of Range!')
+            index = int(input('Index:'))
