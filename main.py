@@ -3,9 +3,10 @@ import torch.cuda
 
 from model import PRNet
 
-dims = {'Electricity': 370, 'ETTh': 14, 'ETTm': 14, 'Exchange': 8, 'QPS': 10, 'Solar': 137, 'Traffic': 862,'Weather': 20}
-patch_lens = {'Electricity': 96, 'ETTh': 24, 'ETTm': 96, 'Exchange': 30, 'QPS': 60, 'Solar': 288, 'Traffic': 24,'Weather': 144}
+dims = {'Electricity': 370, 'ETTh': 14, 'ETTm': 14, 'Exchange': 8, 'QPS': 10, 'Solar': 137, 'Traffic': 862, 'Weather': 20}
+patch_lens = {'Electricity': 96, 'ETTh': 24, 'ETTm': 96, 'Exchange': 30, 'QPS': 60, 'Solar': 288, 'Traffic': 24, 'Weather': 144}
 embed_dims = {'Electricity': 32, 'ETTh': 16, 'ETTm': 16, 'Exchange': 16, 'QPS': 24, 'Solar': 32, 'Traffic': 24, 'Weather': 32}
+
 
 def parse_args():
     hyper_para = argparse.ArgumentParser()
@@ -35,6 +36,7 @@ def parse_args():
     else:
         args.device = torch.device('cpu')
     return args
+
 
 if __name__ == '__main__':
     hyper_params = parse_args()
