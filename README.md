@@ -1,7 +1,7 @@
 # Recognizing Dominant Patterns for Long-term Time Series Forecasting
 
 ## Datasets
-This repository only contains the code of PRNet. Eight datasets are available [here](https://github.com/Hanwen-Hu/Time-Series-Datasets), including `ECL`, `ETTh`, `ETTm`, `Exchange`, `QPS`, `Solar`, `Traffic` and `Weather`. They should be firstly unzipped and moved into the `dataset` folder.
+This repository only contains the code of PRNet. Eight datasets are available [here](https://github.com/Hanwen-Hu/Time-Series-Datasets), including `Electricity`, `ETTh`, `ETTm`, `Exchange`, `QPS`, `Solar`, `Traffic` and `Weather`. They should be firstly unzipped and moved into the `dataset` folder.
 
 Dataset Lists: 
 * ETTh.csv
@@ -15,8 +15,14 @@ Dataset Lists:
 
 
 ## Run
-You can run `main.py` to reproduce the experiment. It will output the amount of parameters, training time and accuracy of PRNet for you to evaluate the generality, efficiency and stability. 
-The `data_loader` loads the datasets, `model` contains the code of PRNet, and `files/networks` saves some cases trained by ourselves.
+You can run `main.py` to reproduce the experiment. Below is an example of running the traffic dataset with `pred_len = 24`
+```
+python3 main.py -cuda_id 0 -dataset Traffic -pred_scale 1
+```
+where `pred_scale = pred_len / patch_len`.
+
+The `data_loader` loads the datasets, `model` contains the code of PRNet, and `files/networks` saves the cases trained by ourselves. 
+Below is the experiment result.
 
 <table>
 <thead>
@@ -83,6 +89,7 @@ The `data_loader` loads the datasets, `model` contains the code of PRNet, and `f
 </tr>
 <tr>
 <td>Weather</td><td>144</td>
+<td>0.3405</td><td>0.3328</td>
 </tr>
 </tbody>
 </table>
