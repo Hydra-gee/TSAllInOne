@@ -79,6 +79,7 @@ Below is the experiment result.
 <tr>
 <td>Solar</td><td>288</td>
 <td>0.1836</td><td>0.2421</td>
+<td>0.1980</td><td>0.2558</td>
 </tr>
 <tr>
 <td>Traffic</td><td>24</td>

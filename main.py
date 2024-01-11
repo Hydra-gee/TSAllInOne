@@ -17,8 +17,8 @@ def parse_args():
     hyper_para.add_argument('-patience', type=int, default=10, help='Early Stopping')
     hyper_para.add_argument('-load', type=str, default='False')
     # Dataset Settings
-    hyper_para.add_argument('-dataset', type=str, default='Weather', help='Dataset Name')
-    hyper_para.add_argument('-pred_len', type=int, default=144, help='Prediction Length')
+    hyper_para.add_argument('-dataset', type=str, default='Solar', help='Dataset Name')
+    hyper_para.add_argument('-pred_len', type=int, default=288, help='Prediction Length')
     # Model Settings
     hyper_para.add_argument('-layer_num', type=int, default=3, help='Number of Attention Layers')
     hyper_para.add_argument('-patch_num', type=int, default=19, help='Number of Segments')
