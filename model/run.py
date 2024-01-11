@@ -1,32 +1,24 @@
+import matplotlib.pyplot as plt
 import torch
 from torch.utils.data import DataLoader
 
-from data_loader import *
+from data_loader import data_dict
 from model.model import Model
 
 
 class PRNet:
     def __init__(self, args):
         self.args = args
-        self.dict = {
-            'Electricity': Electricity,
-            'ETTh': ETTh, 'ETTm': ETTm,
-            'Exchange': Exchange,
-            'QPS': QPS,
-            'Solar': Solar,
-            'Traffic': Traffic,
-            'Weather': Weather
-        }
         print('Dataset:', args.dataset, '\tPrediction Length:', args.pred_len)
+        self.model = Model(args).to(args.device)
         if args.load == 'True':
-            self.model = torch.load('files/networks/' + args.dataset + '_' + str(args.pred_len) + '.pth').to(args.device)
-        else:
-            self.model = Model(args).to(args.device)
+            state_dict = torch.load('files/networks/' + args.dataset + '_' + str(args.pred_len) + '.pth')
+            self.model.load_state_dict(state_dict)
         self.mse_func = torch.nn.MSELoss()
         self.mae_func = lambda x, y: torch.mean((torch.abs(x - y)))
 
     def _get_data(self, mode):
-        dataset = self.dict[self.args.dataset](self.args.device, self.args.pred_len, self.args.seq_len, self.args.dim, mode)
+        dataset = data_dict[self.args.dataset](self.args.device, self.args.pred_len, self.args.seq_len, self.args.dim, mode)
         return DataLoader(dataset, batch_size=self.args.batch_size, shuffle=True)
 
     def _train_model(self, loader, optimizer):
@@ -50,6 +42,10 @@ class PRNet:
             mae_loss += self.mae_func(season + trend, y).item()
         return mse_loss / len(loader), mae_loss / len(loader)
 
+    def count_parameter(self):
+        total = sum([param.nelement() for param in self.model.parameters()])
+        print('Number of Parameters:', total)
+
     def train(self):
         print('Total Epochs:', self.args.epochs)
         train_loader = self._get_data('train')
@@ -60,7 +56,7 @@ class PRNet:
             train_loss = self._train_model(train_loader, optimizer)
             valid_loss, _ = self._eval_model(valid_loader)
             if valid_loss < best_valid:
-                torch.save(self.model, 'files/networks/' + self.args.dataset + '_' + str(self.args.pred_len) + '.pth')
+                torch.save(self.model.state_dict(), 'files/networks/' + self.args.dataset + '_' + str(self.args.pred_len) + '.pth')
                 best_valid = valid_loss
                 patience = 0
             else:
@@ -71,13 +67,35 @@ class PRNet:
                 break
 
     def test(self):
-        self.model = torch.load('files/networks/' + self.args.dataset + '_' + str(self.args.pred_len) + '.pth').to(self.args.device)
+        state_dict = torch.load('files/networks/' + self.args.dataset + '_' + str(self.args.pred_len) + '.pth')
+        self.model.load_state_dict(state_dict)
         test_loader = self._get_data('test')
         mse_loss, mae_loss = self._eval_model(test_loader)
         print(self.args.dataset, 'Test Loss')
         print('MSE: ', round(mse_loss, 4))
         print('MAE: ', round(mae_loss, 4))
 
-    def count_parameter(self):
-        total = sum([param.nelement() for param in self.model.parameters()])
-        print('Number of Parameters:', total)
+    def visualize(self):
+        dataset = data_dict[self.args.dataset](self.args.device, self.args.pred_len, self.args.seq_len, self.args.dim, 'test')
+        state_dict = torch.load('files/networks/' + self.args.dataset + '_' + str(self.args.pred_len) + '.pth')
+        self.model.load_state_dict(state_dict)
+        self.model.eval()
+        plt.rcParams['font.sans-serif'] = ['Times New Roman']
+        index, dim = input('Index, Dimension:').split()
+        index, dim = int(index), int(dim)
+        while 0 <= index < len(dataset):
+            x, y = dataset[index]
+            season, trend = self.model(x.unsqueeze(0))
+            y_bar = (season + trend).squeeze(0)[:, dim].detach().cpu().numpy()
+            x, y = x[:, dim].detach().cpu().numpy(), y[:, dim].detach().cpu().numpy()
+            plt.figure(figsize=(8, 2.4))
+            plt.plot(range(self.args.seq_len), x)
+            plt.plot(range(self.args.seq_len, self.args.seq_len + self.args.pred_len), y, label='real')
+            plt.plot(range(self.args.seq_len, self.args.seq_len + self.args.pred_len), y_bar, label='predict')
+            plt.yticks([])
+            plt.tick_params(labelsize=20)
+            plt.xlim([0, self.args.seq_len + self.args.pred_len])
+            plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.15)
+            plt.savefig('files/figures/visual_' + self.args.dataset + '.pdf')
+            plt.show()
+            index = int(input('Index, Dimension:'))

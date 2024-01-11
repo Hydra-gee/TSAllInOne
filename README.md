@@ -47,7 +47,7 @@ Below is the experiment result.
 <td>0.1333</td><td>0.2263</td>
 <td>0.1572</td><td>0.2453</td>
 <td>0.1604</td><td>0.2453</td>
-<td></td><td></td>
+<td>0.1638</td><td>0.2513</td>
 </tr>
 <tr>
 <td>ETTh</td><td>24</td>
@@ -90,14 +90,15 @@ Below is the experiment result.
 <tr>
 <td>Weather</td><td>144</td>
 <td>0.3405</td><td>0.3328</td>
+<td>0.4138</td><td>0.3923</td>
 </tr>
 </tbody>
 </table>
 
 
 ## Visualization
-There is also a "Visualize.py" file, which is used for visualizing the forecasting result.
-The package `files/figures` saves nine forecasting results, you can also run the trained models by yourself.
+There is also a `visualize.py` file, which is used for visualizing the forecasting result.
+The package `files/figures` saves eight forecasting results, you can also run the trained models by yourself.
 
 ## Contact
 If you have any questions or suggestions for our paper or codes, please contact us. Email: hanwen_hu@sjtu.edu.cn.

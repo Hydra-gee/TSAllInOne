@@ -112,3 +112,14 @@ class Weather(TimeSeries):
         self.data = torch.tensor(dataset.iloc[:, -dim:].values, device=device, dtype=torch.float32)
         self._normalize()
         self._split(mode)
+
+
+data_dict = {
+    'Electricity': Electricity,
+    'ETTh': ETTh, 'ETTm': ETTm,
+    'Exchange': Exchange,
+    'QPS': QPS,
+    'Solar': Solar,
+    'Traffic': Traffic,
+    'Weather': Weather
+}
