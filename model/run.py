@@ -82,7 +82,7 @@ class PRNet:
         self.model.eval()
         plt.rcParams['font.sans-serif'] = ['Times New Roman']
         dim = int(input('Visual Dimension: '))
-        index = int(input('Index:'))
+        index = int(input('Index: '))
         while index >= 0:
             if index < len(dataset):
                 x, y = dataset[index]
@@ -102,4 +102,4 @@ class PRNet:
                 plt.show()
             else:
                 print('Out of Range!')
-            index = int(input('Index:'))
+            index = int(input('Index: '))
