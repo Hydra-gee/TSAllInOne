@@ -81,6 +81,7 @@ Below is the experiment result.
 <td>0.1836</td><td>0.2421</td>
 <td>0.1980</td><td>0.2558</td>
 <td>0.2066</td><td>0.2594</td>
+<td>0.2069</td><td>0.2557</td>
 </tr>
 <tr>
 <td>Traffic</td><td>24</td>
