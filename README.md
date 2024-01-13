@@ -1,17 +1,28 @@
 # Recognizing Dominant Patterns for Long-term Time Series Forecasting
 
 ## Datasets
-This repository only contains the code of PRNet. Eight datasets are available [here](https://github.com/Hanwen-Hu/Time-Series-Datasets), including `Electricity`, `ETTh`, `ETTm`, `Exchange`, `QPS`, `Solar`, `Traffic` and `Weather`. They should be firstly unzipped and moved into the `dataset` folder.
+This repository only contains the code of PRNet. Seven datasets are available [here](https://www.kaggle.com/datasets/limpidcloud/datasets-for-multivariate-time-series-forecasting), including `Electricity`, `ETT`, `Exchange`, `QPS`, `Solar`, `Traffic` and `Weather`. They should be firstly unzipped and moved into the `dataset` folder.
+
 
 Dataset Lists: 
-* ETTh.csv
-* ETTm.csv
-* exchange_rate.csv
-* LD2011_2014.txt
-* PeMS.csv
-* QPS.csv
-* solar_alabama.csv
-* mpi_roof.csv
+* Electricity
+  * LD2011_2014.csv
+  * LD2011_2014_h.csv
+* ETT
+  * ETTh.csv
+  * ETTm.csv
+* Exchange
+  * exchange_rate.csv
+* QPS
+  * MQPS.csv
+* Solar
+  * solar_Alabama.csv
+  * solar_Alabama_h.csv
+* Traffic
+  * PeMS.csv
+* Weather
+  * mpi_roof.csv
+  * mpi_roof_h.csv
 
 
 ## Run
@@ -19,6 +30,17 @@ You can run `main.py` to reproduce the experiment. Below is an example of runnin
 ```
 python3 main.py -cuda_id 0 -dataset Traffic -pred_len 24
 ```
+There are eleven dataset names: 
+```
+Electricity Electricity_h
+ETT ETTh
+Exchange
+QPS
+Solar Solar_h
+Traffic
+Weather Weather_h
+```
+and their hyperparameters are listed in `files/configs.json`.
 
 The `data_loader` loads the datasets, `model` contains the code of PRNet, and `files/networks` saves the cases trained by ourselves. 
 Below is the experiment result.
@@ -49,14 +71,7 @@ Below is the experiment result.
 <td>0.1638</td><td>0.2513</td>
 </tr>
 <tr>
-<td>ETTh</td><td>24</td>
-<td>0.2134</td><td>0.3046</td>
-<td>0.2458</td><td>0.3301</td>
-<td>0.2834</td><td>0.3576</td>
-<td>0.3328</td><td>0.3969</td>
-</tr>
-<tr>
-<td>ETTm</td><td>96</td>
+<td>ETT</td><td>96</td>
 <td>0.2052</td><td>0.2988</td>
 <td>0.2437</td><td>0.3291</td>
 <td>0.2813</td><td>0.3571</td>
@@ -96,6 +111,13 @@ Below is the experiment result.
 <td>0.4138</td><td>0.3923</td>
 <td>0.4755</td><td>0.4386</td>
 <td>0.5455</td><td>0.4807</td>
+</tr>
+<tr>
+<td>ETTh</td><td>24</td>
+<td>0.2134</td><td>0.3046</td>
+<td>0.2458</td><td>0.3301</td>
+<td>0.2834</td><td>0.3576</td>
+<td>0.3328</td><td>0.3969</td>
 </tr>
 </tbody>
 </table>
