@@ -25,11 +25,10 @@ class PRNet:
         self.model.train()
         train_loss = 0
         for _, (x, y) in enumerate(loader):
-            print(x)
             x, y = x.to(self.args.device), y.to(self.args.device)
             optimizer.zero_grad()
-            season, trend = self.model(x)
-            loss = self.mse_func(season + trend, y)
+            y_hat = self.model(x)
+            loss = self.mse_func(y_hat, y)
             train_loss += loss.item()
             loss.backward()
             optimizer.step()
@@ -40,9 +39,9 @@ class PRNet:
         mse_loss, mae_loss = 0, 0
         for _, (x, y) in enumerate(loader):
             x, y = x.to(self.args.device), y.to(self.args.device)
-            season, trend = self.model(x)
-            mse_loss += self.mse_func(season + trend, y).item()
-            mae_loss += self.mae_func(season + trend, y).item()
+            y_hat = self.model(x)
+            mse_loss += self.mse_func(y_hat, y).item()
+            mae_loss += self.mae_func(y_hat, y).item()
         return mse_loss / len(loader), mae_loss / len(loader)
 
     def count_parameter(self):
@@ -50,11 +49,11 @@ class PRNet:
         print('Number of Parameters:', param_num)
 
     def train(self):
-        print('Total Epochs:', self.args.epochs)
         train_loader = self._get_data('train')
         valid_loader = self._get_data('valid')
         optimizer = torch.optim.Adam(self.model.parameters(), lr=self.args.learning_rate)
         patience, best_valid = 0, float('Inf')
+        print('Total Epochs:', self.args.epochs)
         for epoch in range(self.args.epochs):
             train_loss = self._train_model(train_loader, optimizer)
             valid_loss, _ = self._eval_model(valid_loader)

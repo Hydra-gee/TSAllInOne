@@ -22,7 +22,7 @@ class Model(nn.Module):
         avg = segmentation(avg, self.patch_len, stride)
         res = self.season_net(res)
         avg = self.trend_net(avg)
-        return res, avg + bias
+        return res + avg + bias
 
 
 class Net(nn.Module):
