@@ -1,13 +1,14 @@
 import matplotlib.pyplot as plt
 import torch
 from torch.utils.data import DataLoader
+from argparse import Namespace
 
-from data_loader import data_dict
+from data_loader import TSDataset
 from model.model import Model
 
 
 class PRNet:
-    def __init__(self, args):
+    def __init__(self, args: Namespace) -> None:
         self.args = args
         print('Dataset:', args.dataset, '\tPrediction Length:', args.pred_len)
         self.model = Model(args).to(args.device)
@@ -17,11 +18,11 @@ class PRNet:
         self.mse_func = torch.nn.MSELoss()
         self.mae_func = lambda x, y: torch.mean((torch.abs(x - y)))
 
-    def _get_data(self, mode):
-        dataset = data_dict[self.args.dataset](self.args.pred_len, self.args.seq_len, self.args.dim, mode)
+    def _get_data(self, mode: str) -> DataLoader:
+        dataset = TSDataset(self.args.pred_len, self.args.seq_len, self.args.dim, self.args.path, mode)
         return DataLoader(dataset, batch_size=self.args.batch_size, shuffle=True)
 
-    def _train_model(self, loader, optimizer):
+    def _train_model(self, loader: DataLoader, optimizer: torch.optim.Optimizer) -> float:
         self.model.train()
         train_loss = 0
         for _, (x, y) in enumerate(loader):
@@ -34,7 +35,7 @@ class PRNet:
             optimizer.step()
         return train_loss / len(loader)
 
-    def _eval_model(self, loader):
+    def _eval_model(self, loader: DataLoader) -> (float, float):
         self.model.eval()
         mse_loss, mae_loss = 0, 0
         for _, (x, y) in enumerate(loader):
@@ -44,11 +45,11 @@ class PRNet:
             mae_loss += self.mae_func(y_hat, y).item()
         return mse_loss / len(loader), mae_loss / len(loader)
 
-    def count_parameter(self):
+    def count_parameter(self) -> None:
         param_num = sum([param.nelement() for param in self.model.parameters()])
         print('Number of Parameters:', param_num)
 
-    def train(self):
+    def train(self) -> None:
         train_loader = self._get_data('train')
         valid_loader = self._get_data('valid')
         optimizer = torch.optim.Adam(self.model.parameters(), lr=self.args.learning_rate)
@@ -68,7 +69,7 @@ class PRNet:
                 print('Early Stop!')
                 break
 
-    def test(self):
+    def test(self) -> None:
         state_dict = torch.load('files/networks/' + self.args.dataset + '_' + str(self.args.pred_len) + '.pth')
         self.model.load_state_dict(state_dict)
         test_loader = self._get_data('test')
@@ -77,19 +78,20 @@ class PRNet:
         print('MSE: ', round(mse_loss, 4))
         print('MAE: ', round(mae_loss, 4))
 
-    def visualize(self):
-        dataset = data_dict[self.args.dataset](self.args.pred_len, self.args.seq_len, self.args.dim, 'test')
+    def visualize(self) -> None:
+        dataset = TSDataset(self.args.pred_len, self.args.seq_len, self.args.dim, self.args.path, 'test')
         state_dict = torch.load('files/networks/' + self.args.dataset + '_' + str(self.args.pred_len) + '.pth')
-        self.model.load_state_dict(state_dict)
-        self.model.eval()
+        model = Model(self.args)
+        model.load_state_dict(state_dict)
+        model.eval()
         plt.rcParams['font.sans-serif'] = ['Times New Roman']
         dim = int(input('Visual Dimension: '))
         index = int(input('Index: '))
         while index >= 0:
             if index < len(dataset):
                 x, y = dataset[index]
-                season, trend = self.model(x.unsqueeze(0))
-                y_bar = (season + trend).squeeze(0)[:, dim].detach().cpu().numpy()
+                y_bar = model(x.unsqueeze(0))
+                y_bar = y_bar.squeeze(0)[:, dim].detach().cpu().numpy()
                 x, y = x[:, dim].detach().cpu().numpy(), y[:, dim].detach().cpu().numpy()
                 plt.figure(figsize=(8, 2.4))
                 plt.plot(range(self.args.seq_len), x)

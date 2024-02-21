@@ -14,6 +14,7 @@ Dataset Lists:
 * Exchange
   * exchange_rate.csv
 * QPS
+  * HQPS.csv
   * MQPS.csv
 * Solar
   * solar_Alabama.csv
@@ -30,21 +31,22 @@ You can run `main.py` to reproduce the experiment. Below is an example of runnin
 ```
 python3 main.py -cuda_id 0 -dataset Traffic -pred_len 24
 ```
-There are eleven dataset names: 
+There are seven dataset names: 
 ```
-Electricity Electricity_h
-ETT ETTh
-Exchange
-QPS
-Solar Solar_h
-Traffic
-Weather Weather_h
+Electricity ETT Exchange QPS Solar Traffic Weather
 ```
 and their hyperparameters are listed in `files/configs.json`.
 
 The `data_loader` loads the datasets, `model` contains the code of PRNet, and `files/networks` saves the cases trained by ourselves. 
 Below is the experiment result.
 
+We have also unified the **sampling interval** of datasets except for Exchange to **1 hour** for better comparison. You can set the parameter `hour_sampling` to `True` to evaluate these unified datasets.
+
+## Visualization
+There is also a `visualize` function, which is used for visualizing the forecasting result.
+The package `files/figures` saves eight forecasting results, you can also run the trained models by yourself.
+
+## Forecasting Accuracy
 <table>
 <thead>
 <tr>
@@ -86,7 +88,7 @@ Below is the experiment result.
 </tr>
 <tr>
 <td>QPS</td><td>60</td>
-<td>0.0299</td><td>0.0992</td>
+<td>0.0279</td><td>0.0928</td>
 <td>0.0583</td><td>0.1474</td>
 <td>0.1294</td><td>0.2297</td>
 <td>0.3233</td><td>0.3853</td>
@@ -121,11 +123,6 @@ Below is the experiment result.
 </tr>
 </tbody>
 </table>
-
-
-## Visualization
-There is also a `visualize` function, which is used for visualizing the forecasting result.
-The package `files/figures` saves eight forecasting results, you can also run the trained models by yourself.
 
 ## Contact
 If you have any questions or suggestions for our paper or codes, please contact us. Email: hanwen_hu@sjtu.edu.cn.

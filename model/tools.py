@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 
-def decomposition(x, kernel_len):
+def decomposition(x: torch.Tensor, kernel_len: int) -> (torch.Tensor, torch.Tensor):
     # batch * len * dim
     if kernel_len % 2 == 0:
         kernel_len += 1
@@ -14,7 +14,7 @@ def decomposition(x, kernel_len):
     return res, avg
 
 
-def segmentation(x, kernel_len, stride):
+def segmentation(x: torch.Tensor, kernel_len: int, stride: int) -> torch.Tensor:
     # batch * len * dim
     assert (x.shape[1] - kernel_len) % stride == 0
     x = x.transpose(1, 2)
@@ -22,10 +22,10 @@ def segmentation(x, kernel_len, stride):
 
 
 class Transpose(nn.Module):
-    def __init__(self, dim1, dim2):
+    def __init__(self, dim1: int, dim2: int) -> None:
         super().__init__()
         self.dim1 = dim1
         self.dim2 = dim2
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         return x.transpose(self.dim1, self.dim2)

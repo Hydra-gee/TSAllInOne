@@ -1,18 +1,20 @@
 import copy
+import torch
 import torch.nn as nn
+from argparse import Namespace
 
 from model.attention import Attention
 
 
 class Layer(nn.Module):
-    def __init__(self, device, patch_len, embed_dim, mode, dropout=0):
+    def __init__(self, device: torch.device, patch_len: int, embed_dim: int, mode: str, dropout: float=0) -> None:
         super().__init__()
         self.encode = nn.Sequential(nn.Linear(patch_len, embed_dim), nn.Dropout(dropout))
         self.decode = nn.Sequential(nn.Linear(embed_dim, patch_len), nn.Dropout(dropout))
         self.attn = Attention(device, mode)
         self.func = nn.LeakyReLU(0.2)
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         x_new = self.encode(x)
         x_new = self.attn(x, x, x_new)
         x_new = self.decode(x_new)
@@ -20,12 +22,12 @@ class Layer(nn.Module):
 
 
 class Coder(nn.Module):
-    def __init__(self, args, mode):
+    def __init__(self, args: Namespace, mode: str) -> None:
         super().__init__()
         layer = Layer(args.device, args.patch_len, args.embed_dim, mode, args.dropout)
         self.layer_list = nn.ModuleList([copy.deepcopy(layer) for _ in range(args.layer_num)])
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         for layer in self.layer_list:
             x = layer(x)
         return x
@@ -33,13 +35,13 @@ class Coder(nn.Module):
 
 # 最后通过一个线性层对所有序列做叠加
 class Generator(nn.Module):
-    def __init__(self, args):
+    def __init__(self, args: Namespace) -> None:
         super().__init__()
         self.proj_layer = nn.Sequential(nn.Linear(args.patch_len, args.embed_dim), nn.Dropout(args.dropout), nn.LeakyReLU(0.2),
                                         nn.Linear(args.embed_dim, args.pred_len), nn.Dropout(args.dropout))
         self.out_layer = nn.Sequential(nn.Linear(args.patch_num, 1), nn.Dropout(args.dropout))
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         # batch * dim * patch_num * patch_len
         x = self.proj_layer(x)
         return self.out_layer(x.transpose(-1, -2)).squeeze(-1).transpose(-1, -2)  # batch * len * dim

@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 
 
-def sim_to_weight(sim_matrix):
+def sim_to_weight(sim_matrix: torch.Tensor) -> torch.Tensor:
     # batch * dim * seg_num * seg_num
     origin_shape = sim_matrix.shape
     sim_matrix = sim_matrix.reshape(-1, sim_matrix.shape[-1] * sim_matrix.shape[-2])
@@ -15,7 +15,7 @@ def sim_to_weight(sim_matrix):
     return weights / torch.sum(weights, dim=-1, keepdim=True)
 
 
-def season_attention(query, key, value):
+def season_attention(query: torch.Tensor, key: torch.Tensor, value: torch.Tensor) -> torch.Tensor:
     # batch * dim * seg_num * seg_len
     assert query.shape[-1] == key.shape[-1]
     score = torch.matmul(query, key.transpose(-1, -2))  # dot product
@@ -28,7 +28,7 @@ def season_attention(query, key, value):
 
 
 # 趋势事件attention
-def trend_attention(query, key, value):
+def trend_attention(query: torch.Tensor, key: torch.Tensor, value: torch.Tensor) -> torch.Tensor:
     # 维度为batch*dim*seq_num*embed_dim
     # 此时query和key均为提取到的序列特征
     assert query.shape[-1] == key.shape[-1]
@@ -39,7 +39,7 @@ def trend_attention(query, key, value):
     return torch.matmul(score, value)
 
 
-def norm_attention(query, key, value):
+def norm_attention(query: torch.Tensor, key: torch.Tensor, value: torch.Tensor) -> torch.Tensor:
     assert query.shape[-1] == key.shape[-1]
     score = torch.matmul(query, key.transpose(-1, -2)) / math.sqrt(query.shape[-1])  # dot product
     score = torch.softmax(score, dim=-1)
@@ -48,12 +48,12 @@ def norm_attention(query, key, value):
 
 # 定义多头注意力机制，但可能暂时不考虑使用
 class Attention(nn.Module):
-    def __init__(self, device, mode):
+    def __init__(self, device, mode: str) -> None:
         super().__init__()
         self.mode = mode
         self.device = device
 
-    def forward(self, query, key, value):
+    def forward(self, query: torch.Tensor, key: torch.Tensor, value: torch.Tensor) -> torch.Tensor:
         # batch * dim * seq_num * embed_dim
         if self.mode == 'season':
             value = season_attention(query, key, value)

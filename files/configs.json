@@ -1,67 +1,43 @@
 {
   "Electricity": {
     "dim": 370,
-    "patch_len": 96,
-    "embed_dim": 32
+    "patch_len": [24, 96],
+    "embed_dim": [24, 32]
   },
 
   "ETT": {
     "dim": 14,
-    "patch_len": 96,
-    "embed_dim": 16
+    "patch_len": [24, 96],
+    "embed_dim": [16, 16]
   },
 
   "Exchange": {
     "dim": 8,
-    "patch_len": 30,
-    "embed_dim": 16
+    "patch_len": [30, 30],
+    "embed_dim": [16, 16]
   },
 
   "QPS": {
     "dim": 10,
-    "patch_len": 60,
-    "embed_dim": 24
+    "patch_len": [6, 60],
+    "embed_dim": [16, 24]
   },
 
   "Solar": {
     "dim": 137,
-    "patch_len": 288,
-    "embed_dim": 32
+    "patch_len": [24, 288],
+    "embed_dim": [24, 32]
   },
 
   "Traffic": {
     "dim": 862,
-    "patch_len": 24,
-    "embed_dim": 24
+    "patch_len": [24, 24],
+    "embed_dim": [24 ,24]
   },
 
   "Weather": {
     "dim": 20,
-    "patch_len": 144,
-    "embed_dim": 32
-  },
-
-  "Electricity_h": {
-    "dim": 370,
-    "patch_len": 24,
-    "embed_dim": 24
-  },
-
-  "ETTh": {
-    "dim": 14,
-    "patch_len": 24,
-    "embed_dim": 16
-  },
-
-  "Solar_h": {
-    "dim": 137,
-    "patch_len": 24,
-    "embed_dim": 24
-  },
-
-  "Weather_h": {
-    "dim": 20,
-    "patch_len": 24,
-    "embed_dim": 24
+    "patch_len": [24, 144],
+    "embed_dim": [24, 32]
   }
 }

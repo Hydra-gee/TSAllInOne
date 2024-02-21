@@ -4,16 +4,16 @@ import pandas as pd
 
 
 class TimeSeries(Dataset):
-    def __init__(self, pred_len, seq_len):
+    def __init__(self, pred_len: int, seq_len: int) -> None:
         self.pred_len = pred_len
         self.seq_len = seq_len
 
-    def _normalize(self):
+    def _normalize(self) -> None:
         avg = torch.mean(self.data, dim=0, keepdim=True)
         std = torch.std(self.data, dim=0, keepdim=True)
         self.data = (self.data - avg) / std
 
-    def _split(self, mode):
+    def _split(self, mode: str) -> None:
         total_len = self.data.shape[0] - self.seq_len - self.pred_len * 3 + 3
         max_train_idx = int(total_len * 0.7) + self.seq_len + self.pred_len - 1
         max_valid_idx = int(total_len * 0.8) + self.seq_len + self.pred_len * 2 - 2
@@ -24,138 +24,33 @@ class TimeSeries(Dataset):
         elif mode == 'test':
             self.data = self.data[max_train_idx + self.pred_len - 1:]
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.data.shape[0] - self.seq_len - self.pred_len + 1
 
-    def __getitem__(self, item):
+    def __getitem__(self, item: int) -> (torch.Tensor, torch.Tensor):
         left, mid, right = item, item + self.seq_len, item + self.seq_len + self.pred_len
         x = self.data[left: mid]
         y = self.data[mid: right]
         return x, y
 
 
-# Electricity Consumption
-class Electricity(TimeSeries):
-    def __init__(self, pred_len, seq_len, dim, mode):
+class TSDataset(TimeSeries):
+    def __init__(self, pred_len: int, seq_len: int, dim: int, path: str, mode: str) -> None:
         super().__init__(pred_len, seq_len)
-        dataset = pd.read_csv('dataset/Electricity/LD2011_2014.csv')
+        dataset = pd.read_csv(path)
         assert dim < dataset.shape[1]
-        self.data = torch.tensor(dataset.iloc[:, -dim:].values, dtype=torch.float32)
+        self.data = torch.Tensor(dataset.iloc[:, -dim:].values)
         self._normalize()
         self._split(mode)
 
 
-class ElectricityH(TimeSeries):
-    def __init__(self, pred_len, seq_len, dim, mode):
-        super().__init__(pred_len, seq_len)
-        dataset = pd.read_csv('dataset/Electricity/LD2011_2014_h.csv')
-        assert dim < dataset.shape[1]
-        self.data = torch.tensor(dataset.iloc[:, -dim:].values, dtype=torch.float32)
-        self._normalize()
-        self._split(mode)
-
-
-# Electricity Transformer Temperature
-class ETT(TimeSeries):
-    def __init__(self, pred_len, seq_len, dim, mode):
-        super().__init__(pred_len, seq_len)
-        dataset = pd.read_csv('dataset/Electricity/ETTm.csv')
-        assert dim < dataset.shape[1]
-        self.data = torch.tensor(dataset.iloc[:, -dim:].values, dtype=torch.float32)
-        self._normalize()
-        self._split(mode)
-
-
-class ETTH(TimeSeries):
-    def __init__(self, pred_len, seq_len, dim, mode):
-        super().__init__(pred_len, seq_len)
-        dataset = pd.read_csv('dataset/Electricity/ETTh.csv')
-        assert dim < dataset.shape[1]
-        self.data = torch.tensor(dataset.iloc[:, -dim:].values, dtype=torch.float32)
-        self._normalize()
-        self._split(mode)
-
-
-# Exchange Rate
-class Exchange(TimeSeries):
-    def __init__(self, pred_len, seq_len, dim, mode):
-        super().__init__(pred_len, seq_len)
-        dataset = pd.read_csv('dataset/Exchange/exchange_rate.csv', header=None)
-        assert dim <= dataset.shape[1]
-        self.data = torch.tensor(dataset.iloc[:, -dim:].values, dtype=torch.float32)
-        self._normalize()
-        self._split(mode)
-
-
-# Queries of Web Service
-class QPS(TimeSeries):
-    def __init__(self, pred_len, seq_len, dim, mode):
-        super().__init__(pred_len, seq_len)
-        dataset = pd.read_csv('dataset/QPS/MQPS.csv')
-        assert dim < dataset.shape[1]
-        self.data = torch.tensor(dataset.iloc[:, -dim:].values, dtype=torch.float32)
-        self._normalize()
-        self._split(mode)
-
-
-# Solar Power
-class Solar(TimeSeries):
-    def __init__(self, pred_len, seq_len, dim, mode):
-        super().__init__(pred_len, seq_len)
-        dataset = pd.read_csv('dataset/Solar/solar_Alabama.csv')
-        assert dim < dataset.shape[1]
-        self.data = torch.tensor(dataset.iloc[:, -dim:].values, dtype=torch.float32)
-        self._normalize()
-        self._split(mode)
-
-
-class SolarH(TimeSeries):
-    def __init__(self, pred_len, seq_len, dim, mode):
-        super().__init__(pred_len, seq_len)
-        dataset = pd.read_csv('dataset/Solar/solar_Alabama_h.csv')
-        assert dim < dataset.shape[1]
-        self.data = torch.tensor(dataset.iloc[:, -dim:].values, dtype=torch.float32)
-        self._normalize()
-        self._split(mode)
-
-
-class Traffic(TimeSeries):
-    def __init__(self, pred_len, seq_len, dim, mode):
-        super().__init__(pred_len, seq_len)
-        dataset = pd.read_csv('dataset/Traffic/PeMS.csv', delimiter=',')
-        assert dim < dataset.shape[1]
-        self.data = torch.tensor(dataset.iloc[:, -dim:].values, dtype=torch.float32)
-        self._normalize()
-        self._split(mode)
-
-
-# Meteorological Observations
-class Weather(TimeSeries):
-    def __init__(self, pred_len, seq_len, dim, mode):
-        super().__init__(pred_len, seq_len)
-        dataset = pd.read_csv('dataset/Weather/mpi_roof.csv')
-        assert dim < dataset.shape[1]
-        self.data = torch.tensor(dataset.iloc[:, -dim:].values, dtype=torch.float32)
-        self._normalize()
-        self._split(mode)
-
-
-class WeatherH(TimeSeries):
-    def __init__(self, pred_len, seq_len, dim, mode):
-        super().__init__(pred_len, seq_len)
-        dataset = pd.read_csv('dataset/Weather/mpi_roof_h.csv')
-        assert dim < dataset.shape[1]
-        self.data = torch.tensor(dataset.iloc[:, -dim:].values, dtype=torch.float32)
-        self._normalize()
-        self._split(mode)
-
-
-data_dict = {
-    'Electricity': Electricity, 'Electricity_h': ElectricityH,
-    'ETT': ETT, 'ETTh': ETTH,
-    'Exchange': Exchange,
-    'QPS': QPS,
-    'Solar': Solar, 'Solar_h': SolarH,
-    'Traffic': Traffic,
-    'Weather': Weather, 'Weather_h': WeatherH,
+# paths of csv files, [hourly sampled, original dataset]
+data_path_dict = {
+    'Electricity': ['dataset/Electricity/LD2011_2014_h.csv', 'dataset/Electricity/LD2011_2014.csv'],  # Electricity Consumption
+    'ETT': ['dataset/Electricity/ETTh.csv', 'dataset/Electricity/ETTm.csv'],  # Electricity Transformer Temperature
+    'Exchange': ['dataset/Exchange/exchange_rate.csv', 'dataset/Exchange/exchange_rate.csv'],  # Exchange Rate
+    'QPS': ['dataset/QPS/HQPS.csv', 'dataset/QPS/MQPS.csv'],  # Queries of Web Service
+    'Solar': ['dataset/Solar/solar_Alabama_h.csv',  'dataset/Solar/solar_Alabama.csv'],  # Solar Power
+    'Traffic': ['dataset/Traffic/PeMS.csv', 'dataset/Traffic/PeMS.csv'],
+    'Weather': ['dataset/Weather/mpi_roof_h.csv', 'dataset/Weather/mpi_roof.csv']  # Meteorological Observations
 }

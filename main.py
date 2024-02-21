@@ -3,9 +3,10 @@ import argparse
 import torch.cuda
 
 from model import PRNet
+from data_loader import data_path_dict
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     hyper_para = argparse.ArgumentParser()
     # Basic Settings
     hyper_para.add_argument('-cuda_id', type=int, default=0)
@@ -13,9 +14,10 @@ def parse_args():
     hyper_para.add_argument('-epochs', type=int, default=100)
     hyper_para.add_argument('-learning_rate', type=float, default=5e-4)
     hyper_para.add_argument('-patience', type=int, default=10, help='Early Stopping')
+    hyper_para.add_argument('-hour_sampling', type=str, default='False')
     hyper_para.add_argument('-load', type=str, default='False')
     # Dataset Settings
-    hyper_para.add_argument('-dataset', type=str, default='Weather_h', help='Dataset Name')
+    hyper_para.add_argument('-dataset', type=str, default='Traffic', help='Dataset Name')
     hyper_para.add_argument('-pred_len', type=int, default=24, help='Prediction Length')
     # Model Settings
     hyper_para.add_argument('-layer_num', type=int, default=3, help='Number of Attention Layers')
@@ -25,8 +27,10 @@ def parse_args():
 
     with open('files/configs.json') as file:
         params = json.load(file)
-        args.patch_len = params[args.dataset]['patch_len']
-        args.embed_dim = params[args.dataset]['embed_dim']
+        idx = 0 if args.hour_sampling == 'True' else 1
+        args.path = data_path_dict[args.dataset][idx]
+        args.patch_len = params[args.dataset]['patch_len'][idx]
+        args.embed_dim = params[args.dataset]['embed_dim'][idx]
         args.dim = params[args.dataset]['dim']
     args.seq_len = args.patch_len * 4
 
