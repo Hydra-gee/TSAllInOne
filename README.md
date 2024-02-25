@@ -40,7 +40,7 @@ and their hyperparameters are listed in `files/configs.json`.
 The `data_loader` loads the datasets, `model` contains the code of PRNet, and `files/networks` saves the cases trained by ourselves. 
 Below is the experiment result.
 
-We have also unified the **sampling interval** of datasets except for Exchange to **1 hour** for better comparison. You can set the parameter `hour_sampling` to `True` to evaluate these unified datasets.
+We have also unified the **sampling interval** of datasets except for Exchange to **1 hour** for better comparison. You can set the parameter `interval` to `'H'` to evaluate these unified datasets.
 
 ## Visualization
 There is also a `visualize` function, which is used for visualizing the forecasting result.
