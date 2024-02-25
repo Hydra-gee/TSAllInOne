@@ -17,8 +17,8 @@ def parse_args() -> argparse.Namespace:
     hyper_para.add_argument('-hour_sampling', type=str, default='False')
     hyper_para.add_argument('-load', type=str, default='False')
     # Dataset Settings
-    hyper_para.add_argument('-dataset', type=str, default='Traffic', help='Dataset Name')
-    hyper_para.add_argument('-pred_len', type=int, default=24, help='Prediction Length')
+    hyper_para.add_argument('-dataset', type=str, default='ETT', help='Dataset Name')
+    hyper_para.add_argument('-pred_len', type=int, default=96, help='Prediction Length')
     # Model Settings
     hyper_para.add_argument('-layer_num', type=int, default=3, help='Number of Attention Layers')
     hyper_para.add_argument('-patch_num', type=int, default=19, help='Number of Segments')
@@ -30,7 +30,7 @@ def parse_args() -> argparse.Namespace:
         idx = 0 if args.hour_sampling == 'True' else 1
         args.path = data_path_dict[args.dataset][idx]
         args.patch_len = params[args.dataset]['patch_len'][idx]
-        args.embed_dim = params[args.dataset]['embed_dim'][idx]
+        args.hidden_dim = params[args.dataset]['hidden_dim'][idx]
         args.dim = params[args.dataset]['dim']
     args.seq_len = args.patch_len * 4
 
@@ -42,8 +42,8 @@ def parse_args() -> argparse.Namespace:
 
 
 if __name__ == '__main__':
-    hyper_params = parse_args()
-    model = PRNet(hyper_params)
+    hyper_param = parse_args()
+    model = PRNet(hyper_param)
     model.count_parameter()
     model.train()
     model.test()

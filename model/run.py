@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
+
 import torch
 from torch.utils.data import DataLoader
 from argparse import Namespace
 
 from data_loader import TSDataset
-from model.model import Model
+from .model import Model
 
 
 class PRNet:
@@ -59,7 +60,8 @@ class PRNet:
             train_loss = self._train_model(train_loader, optimizer)
             valid_loss, _ = self._eval_model(valid_loader)
             if valid_loss < best_valid:
-                torch.save(self.model.state_dict(), 'files/networks/' + self.args.dataset + '_' + str(self.args.pred_len) + '.pth')
+                file_name = ('H_' if self.args.hour_sampling == 'True' else 'M_') + str(self.args.pred_len) + '.pth'
+                torch.save(self.model.state_dict(), 'files/networks/' + self.args.dataset + '/' + file_name)
                 best_valid = valid_loss
                 patience = 0
             else:
@@ -84,16 +86,16 @@ class PRNet:
         model = Model(self.args)
         model.load_state_dict(state_dict)
         model.eval()
-        plt.rcParams['font.sans-serif'] = ['Times New Roman']
-        dim = int(input('Visual Dimension: '))
+        dim_id = int(input('Visual Dimension: '))
         index = int(input('Index: '))
         while index >= 0:
             if index < len(dataset):
                 x, y = dataset[index]
                 y_bar = model(x.unsqueeze(0))
-                y_bar = y_bar.squeeze(0)[:, dim].detach().cpu().numpy()
-                x, y = x[:, dim].detach().cpu().numpy(), y[:, dim].detach().cpu().numpy()
+                y_bar = y_bar.squeeze(0)[:, dim_id].detach().cpu().numpy()
+                x, y = x[:, dim_id].detach().cpu().numpy(), y[:, dim_id].detach().cpu().numpy()
                 plt.figure(figsize=(8, 2.4))
+                plt.rcParams['font.sans-serif'] = ['Times New Roman']
                 plt.plot(range(self.args.seq_len), x)
                 plt.plot(range(self.args.seq_len, self.args.seq_len + self.args.pred_len), y, label='real')
                 plt.plot(range(self.args.seq_len, self.args.seq_len + self.args.pred_len), y_bar, label='predict')

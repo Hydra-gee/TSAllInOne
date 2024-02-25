@@ -47,7 +47,7 @@ class TSDataset(TimeSeries):
 # paths of csv files, [hourly sampled, original dataset]
 data_path_dict = {
     'Electricity': ['dataset/Electricity/LD2011_2014_h.csv', 'dataset/Electricity/LD2011_2014.csv'],  # Electricity Consumption
-    'ETT': ['dataset/Electricity/ETTh.csv', 'dataset/Electricity/ETTm.csv'],  # Electricity Transformer Temperature
+    'ETT': ['dataset/ETT/ETTh.csv', 'dataset/ETT/ETTm.csv'],  # Electricity Transformer Temperature
     'Exchange': ['dataset/Exchange/exchange_rate.csv', 'dataset/Exchange/exchange_rate.csv'],  # Exchange Rate
     'QPS': ['dataset/QPS/HQPS.csv', 'dataset/QPS/MQPS.csv'],  # Queries of Web Service
     'Solar': ['dataset/Solar/solar_Alabama_h.csv',  'dataset/Solar/solar_Alabama.csv'],  # Solar Power

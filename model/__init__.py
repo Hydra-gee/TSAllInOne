@@ -1,1 +1,1 @@
-from model.run import PRNet
+from .run import PRNet

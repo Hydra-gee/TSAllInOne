@@ -1,9 +1,11 @@
-import torch
-import torch.nn as nn
 from argparse import Namespace
 
-import model.units as unit
-from model.tools import decomposition, segmentation, Transpose
+import torch
+import torch.nn as nn
+from torch import Tensor
+
+from .units import Encoder, Generator
+from .tools import decomposition, segmentation
 
 
 class Model(nn.Module):
@@ -29,14 +31,12 @@ class Model(nn.Module):
 class Net(nn.Module):
     def __init__(self, args: Namespace, mode: str) -> None:
         super().__init__()
-        self.input_layer = nn.Sequential(
-            Transpose(-1, -2), nn.Linear(args.patch_num, args.patch_num), nn.Dropout(args.dropout), Transpose(-1, -2))
-        self.coder = unit.Coder(args, mode)  # mode: season or trend
-        self.generator = unit.Generator(args)
+        self.input_layer = nn.Sequential(nn.Linear(args.patch_num, args.patch_num), nn.Dropout(args.dropout))
+        self.encoder = Encoder(args, mode)  # mode: season or trend or else
+        self.generator = Generator(args)
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # batch * dim * num * len
-        x = self.input_layer(x)
-        x = self.coder(x)
-        x = self.generator(x)
-        return x
+    def forward(self, x: Tensor) -> Tensor:
+        # batch * dim * patch_num * patch_len
+        x = self.input_layer(x.transpose(-1, -2)).transpose(-1, -2)
+        x = self.encoder(x)
+        return self.generator(x)
