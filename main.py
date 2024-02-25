@@ -14,7 +14,7 @@ def parse_args() -> argparse.Namespace:
     hyper_para.add_argument('-epochs', type=int, default=100)
     hyper_para.add_argument('-learning_rate', type=float, default=5e-4)
     hyper_para.add_argument('-patience', type=int, default=10, help='Early Stopping')
-    hyper_para.add_argument('-hour_sampling', type=str, default='False')
+    hyper_para.add_argument('-interval', type=str, default='M', help='H for hourly sampling and M for the origin')
     hyper_para.add_argument('-load', type=str, default='False')
     # Dataset Settings
     hyper_para.add_argument('-dataset', type=str, default='ETT', help='Dataset Name')
@@ -27,7 +27,7 @@ def parse_args() -> argparse.Namespace:
 
     with open('files/configs.json') as file:
         params = json.load(file)
-        idx = 0 if args.hour_sampling == 'True' else 1
+        idx = 0 if args.interval == 'H' else 1
         args.path = data_path_dict[args.dataset][idx]
         args.patch_len = params[args.dataset]['patch_len'][idx]
         args.hidden_dim = params[args.dataset]['hidden_dim'][idx]

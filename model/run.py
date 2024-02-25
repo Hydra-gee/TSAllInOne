@@ -13,11 +13,13 @@ class PRNet:
         self.args = args
         print('Dataset:', args.dataset, '\tPrediction Length:', args.pred_len)
         self.model = Model(args).to(args.device)
+        self.file_name = 'files/networks/' + self.args.dataset + '/' + args.interval + '_' + str(self.args.pred_len) + '.pth'
         if args.load == 'True':
-            state_dict = torch.load('files/networks/' + args.dataset + '_' + str(args.pred_len) + '.pth')
+            state_dict = torch.load(self.file_name)
             self.model.load_state_dict(state_dict)
         self.mse_func = torch.nn.MSELoss()
         self.mae_func = lambda x, y: torch.mean((torch.abs(x - y)))
+
 
     def _get_data(self, mode: str) -> DataLoader:
         dataset = TSDataset(self.args.pred_len, self.args.seq_len, self.args.dim, self.args.path, mode)
@@ -60,8 +62,7 @@ class PRNet:
             train_loss = self._train_model(train_loader, optimizer)
             valid_loss, _ = self._eval_model(valid_loader)
             if valid_loss < best_valid:
-                file_name = ('H_' if self.args.hour_sampling == 'True' else 'M_') + str(self.args.pred_len) + '.pth'
-                torch.save(self.model.state_dict(), 'files/networks/' + self.args.dataset + '/' + file_name)
+                torch.save(self.model.state_dict(), self.file_name)
                 best_valid = valid_loss
                 patience = 0
             else:
@@ -72,7 +73,7 @@ class PRNet:
                 break
 
     def test(self) -> None:
-        state_dict = torch.load('files/networks/' + self.args.dataset + '_' + str(self.args.pred_len) + '.pth')
+        state_dict = torch.load(self.file_name)
         self.model.load_state_dict(state_dict)
         test_loader = self._get_data('test')
         mse_loss, mae_loss = self._eval_model(test_loader)
@@ -82,7 +83,7 @@ class PRNet:
 
     def visualize(self) -> None:
         dataset = TSDataset(self.args.pred_len, self.args.seq_len, self.args.dim, self.args.path, 'test')
-        state_dict = torch.load('files/networks/' + self.args.dataset + '_' + str(self.args.pred_len) + '.pth')
+        state_dict = torch.load(self.file_name)
         model = Model(self.args)
         model.load_state_dict(state_dict)
         model.eval()
