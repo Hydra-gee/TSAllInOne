@@ -45,6 +45,6 @@ if __name__ == '__main__':
     hyper_param = parse_args()
     model = PRNet(hyper_param)
     model.count_parameter()
-    # model.train()
+    model.train()
     model.test()
     model.visualize()

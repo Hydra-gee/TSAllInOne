@@ -20,16 +20,14 @@ class PRNet:
         self.mse_func = torch.nn.MSELoss()
         self.mae_func = lambda x, y: torch.mean((torch.abs(x - y)))
 
-
     def _get_data(self, mode: str) -> DataLoader:
-        dataset = TSDataset(self.args.pred_len, self.args.seq_len, self.args.dim, self.args.path, mode)
+        dataset = TSDataset(self.args.pred_len, self.args.seq_len, self.args.dim, self.args.path, self.args.device, mode)
         return DataLoader(dataset, batch_size=self.args.batch_size, shuffle=True)
 
     def _train_model(self, loader: DataLoader, optimizer: torch.optim.Optimizer) -> float:
         self.model.train()
         train_loss = 0
         for _, (x, y) in enumerate(loader):
-            x, y = x.to(self.args.device), y.to(self.args.device)
             optimizer.zero_grad()
             y_hat = self.model(x)
             loss = self.mse_func(y_hat, y)
@@ -42,7 +40,6 @@ class PRNet:
         self.model.eval()
         mse_loss, mae_loss = 0, 0
         for _, (x, y) in enumerate(loader):
-            x, y = x.to(self.args.device), y.to(self.args.device)
             y_hat = self.model(x)
             mse_loss += self.mse_func(y_hat, y).item()
             mae_loss += self.mae_func(y_hat, y).item()
@@ -82,7 +79,7 @@ class PRNet:
         print('MAE: ', round(mae_loss, 4))
 
     def visualize(self) -> None:
-        dataset = TSDataset(self.args.pred_len, self.args.seq_len, self.args.dim, self.args.path, 'test')
+        dataset = TSDataset(self.args.pred_len, self.args.seq_len, self.args.dim, self.args.path, self.args.device, 'test')
         state_dict = torch.load(self.file_name)
         model = Model(self.args)
         model.load_state_dict(state_dict)

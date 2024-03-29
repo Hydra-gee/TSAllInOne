@@ -35,11 +35,11 @@ class TimeSeries(Dataset):
 
 
 class TSDataset(TimeSeries):
-    def __init__(self, pred_len: int, seq_len: int, dim: int, path: str, mode: str) -> None:
+    def __init__(self, pred_len: int, seq_len: int, dim: int, path: str, device: torch.device, mode: str) -> None:
         super().__init__(pred_len, seq_len)
         dataset = pd.read_csv(path)
         assert dim < dataset.shape[1]
-        self.data = torch.Tensor(dataset.iloc[:, -dim:].values)
+        self.data = torch.Tensor(dataset.iloc[:, -dim:].values).to(device)
         self._normalize()
         self._split(mode)
 
