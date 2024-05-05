@@ -21,8 +21,10 @@ if __name__ == '__main__':
     with open('files/dataset_configs.json') as file2:
         datasetConfig = json.load(file2)
     for dataName in datasetConfig.keys():
-        for pred in [96,192,336,720]:
-            expConfig['pred_len'] = pred
+        for pred in [1,2,3.5,7.5]:
+            expConfig['patch_len'] = datasetConfig[dataName]['patch_len']
+            expConfig['seq_len'] = int(4 * datasetConfig[dataName]['patch_len'])
+            expConfig['pred_len'] = int(expConfig['seq_len'] * pred)
             expConfig['dataset'] = dataName
             expConfig['path'] = datasetConfig[expConfig['dataset']]['path']
             expConfig['dim'] = datasetConfig[expConfig['dataset']]['dim']

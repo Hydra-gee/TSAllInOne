@@ -1,2 +1,9 @@
-/dataset/
+/dataset
 /files/networks/
+/dataset/Electricity/
+/dataset/ETT/
+/dataset/Exchange/
+/dataset/QPS/
+/dataset/Solar/
+/dataset/Traffic/
+/dataset/Weather/

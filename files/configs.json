@@ -7,13 +7,14 @@
     "seq_len": 720,
     "pred_len": 96,
     "dataset": "ETTh1",
-    "model": "iTransformer"
+    "model": "PRNet"
   },
   "modelConfig": {
     "PRNet": {
       "patch_num": 19,
       "dropout": 0.1,
-      "layer_num": 3
+      "layer_num": 3,
+      "hidden_dim": 24
     },
     "iTransformer": {
       "dropout": 0.1,

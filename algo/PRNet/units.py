@@ -24,9 +24,9 @@ class Layer(nn.Module):
 
 
 class Encoder(nn.Module):
-    def __init__(self, args: Namespace, mode: str) -> None:
+    def __init__(self, expConfig,args: Namespace, mode: str) -> None:
         super().__init__()
-        layer = Layer(torch.device('cuda', 0), args['patch_len'], args['hidden_dim'], mode, args['dropout'])
+        layer = Layer(torch.device('cuda', 0), expConfig['patch_len'], args['hidden_dim'], mode, args['dropout'])
         self.layer_list = nn.ModuleList([copy.deepcopy(layer) for _ in range(args['layer_num'])])
 
     def forward(self, x: Tensor) -> Tensor:
@@ -37,10 +37,10 @@ class Encoder(nn.Module):
 
 # 最后通过一个线性层对所有序列做叠加
 class Generator(nn.Module):
-    def __init__(self, args: Namespace) -> None:
+    def __init__(self, expConfig,args: Namespace) -> None:
         super().__init__()
-        self.proj_layer = nn.Sequential(nn.Linear(args['patch_len'], args['hidden_dim']), nn.Dropout(args['dropout']), nn.LeakyReLU(0.2),
-                                        nn.Linear(args['hidden_dim'], args['pred_len']), nn.Dropout(args['dropout']))
+        self.proj_layer = nn.Sequential(nn.Linear(expConfig['patch_len'], args['hidden_dim']), nn.Dropout(args['dropout']), nn.LeakyReLU(0.2),
+                                        nn.Linear(args['hidden_dim'], expConfig['pred_len']), nn.Dropout(args['dropout']))
         self.out_layer = nn.Sequential(nn.Linear(args['patch_num'], 1), nn.Dropout(args['dropout']))
 
     def forward(self, x: Tensor) -> Tensor:

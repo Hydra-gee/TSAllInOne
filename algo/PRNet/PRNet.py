@@ -9,12 +9,12 @@ from .tools import decomposition, segmentation
 
 
 class Model(nn.Module):
-    def __init__(self, args: Namespace) -> None:
+    def __init__(self, expConfig,args: Namespace) -> None:
         super().__init__()
-        self.patch_len = args['patch_len']
+        self.patch_len = expConfig['patch_len']
         self.patch_num = args['patch_num']
-        self.season_net = Net(args, 'season')
-        self.trend_net = Net(args, 'trend')
+        self.season_net = Net(expConfig,args, 'season')
+        self.trend_net = Net(expConfig,args, 'trend')
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         bias = torch.mean(x, dim=1, keepdim=True)
@@ -29,11 +29,11 @@ class Model(nn.Module):
 
 
 class Net(nn.Module):
-    def __init__(self, args: Namespace, mode: str) -> None:
+    def __init__(self, expConfig,args: Namespace, mode: str) -> None:
         super().__init__()
         self.input_layer = nn.Sequential(nn.Linear(args['patch_num'], args['patch_num']), nn.Dropout(args['dropout']))
-        self.encoder = Encoder(args, mode)  # mode: season or trend or else
-        self.generator = Generator(args)
+        self.encoder = Encoder(expConfig,args, mode)  # mode: season or trend or else
+        self.generator = Generator(expConfig,args)
 
     def forward(self, x: Tensor) -> Tensor:
         # batch * dim * patch_num * patch_len
