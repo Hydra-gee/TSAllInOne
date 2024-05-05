@@ -1,50 +1,34 @@
 import json
 import argparse
 import torch.cuda
-
-from model import PRNet
+import numpy as np
+import random
+from exp.experiment import Experiment
 from data_loader import data_path_dict
 
-
-def parse_args() -> argparse.Namespace:
-    hyper_para = argparse.ArgumentParser()
-    # Basic Settings
-    hyper_para.add_argument('-cuda_id', type=int, default=0)
-    hyper_para.add_argument('-batch_size', type=int, default=64)
-    hyper_para.add_argument('-epochs', type=int, default=100)
-    hyper_para.add_argument('-learning_rate', type=float, default=5e-4)
-    hyper_para.add_argument('-patience', type=int, default=10, help='Early Stopping')
-    hyper_para.add_argument('-interval', type=str, default='M', help='H for hourly sampling and M for the origin')
-    hyper_para.add_argument('-load', type=str, default='False')
-    # Dataset Settings
-    hyper_para.add_argument('-dataset', type=str, default='ETT', help='Dataset Name')
-    hyper_para.add_argument('-pred_len', type=int, default=96, help='Prediction Length')
-    # Model Settings
-    hyper_para.add_argument('-layer_num', type=int, default=3, help='Number of Attention Layers')
-    hyper_para.add_argument('-patch_num', type=int, default=19, help='Number of Segments')
-    hyper_para.add_argument('-dropout', type=float, default=0.1, help='Dropout Probability')
-    args = hyper_para.parse_args()
-
-    with open('files/configs.json') as file:
-        params = json.load(file)
-        idx = 0 if args.interval == 'H' else 1
-        args.path = data_path_dict[args.dataset][idx]
-        args.patch_len = params[args.dataset]['patch_len'][idx]
-        args.hidden_dim = params[args.dataset]['hidden_dim'][idx]
-        args.dim = params[args.dataset]['dim']
-    args.seq_len = args.patch_len * 4
-
-    if torch.cuda.is_available():
-        args.device = torch.device('cuda', args.cuda_id)
-    else:
-        args.device = torch.device('cpu')
-    return args
-
+fix_seed = 2023
+random.seed(fix_seed)
+torch.manual_seed(fix_seed)
+np.random.seed(fix_seed)
 
 if __name__ == '__main__':
-    hyper_param = parse_args()
-    model = PRNet(hyper_param)
-    model.count_parameter()
-    model.train()
-    model.test()
-    model.visualize()
+    # hyper_param = parse_args()
+    with open('files/configs.json') as file:
+        params = json.load(file)
+        expConfig = params['expConfig']
+        modelConfig = params['modelConfig']
+        expConfig['device'] = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    with open('files/dataset_configs.json') as file2:
+        datasetConfig = json.load(file2)
+    for dataName in datasetConfig.keys():
+        for pred in [96,192,336,720]:
+            expConfig['pred_len'] = pred
+            expConfig['dataset'] = dataName
+            expConfig['path'] = datasetConfig[expConfig['dataset']]['path']
+            expConfig['dim'] = datasetConfig[expConfig['dataset']]['dim']
+
+            exp = Experiment(expConfig,modelConfig)
+            exp.count_parameter()
+            exp.train()
+            exp.test()
+    # exp.visualize()

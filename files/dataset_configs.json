@@ -1,0 +1,35 @@
+{
+  "ETTh1": {
+    "path": "dataset/ETT/ETTh1.csv",
+    "dim": 7
+  },
+  "ETTh2": {
+    "path": "dataset/ETT/ETTh2.csv",
+    "dim": 7
+  },
+  "ETTm1": {
+    "path": "dataset/ETT/ETTm1.csv",
+    "dim": 7
+  },
+  "ETTm2": {
+    "path": "dataset/ETT/ETTm2.csv",
+    "dim": 7
+  },
+  "Electricity": {
+    "path": "dataset/Electricity/LD2011_2014.csv",
+    "dim": 370
+  },
+  "Solar": {
+    "path": "dataset/Solar/solar_Alabama_downsample.csv",
+    "dim": 137
+  },
+  "Weather": {
+    "path": "dataset/Weather/mpi_roof.csv",
+    "dim": 20
+  },
+  "Traffic": {
+    "path": "dataset/Traffic/PeMS.csv",
+    "dim": 862
+  }
+
+}

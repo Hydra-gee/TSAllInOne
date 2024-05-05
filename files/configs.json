@@ -1,43 +1,35 @@
 {
-  "Electricity": {
-    "dim": 370,
-    "patch_len": [24, 96],
-    "hidden_dim": [24, 32]
+  "expConfig": {
+    "batch_size": 32,
+    "epochs": 100,
+    "learning_rate": 0.00005,
+    "patience": 5,
+    "seq_len": 720,
+    "pred_len": 96,
+    "dataset": "ETTh1",
+    "model": "iTransformer"
   },
-
-  "ETT": {
-    "dim": 14,
-    "patch_len": [24, 96],
-    "hidden_dim": [16, 16]
-  },
-
-  "Exchange": {
-    "dim": 8,
-    "patch_len": [30, 30],
-    "hidden_dim": [16, 16]
-  },
-
-  "QPS": {
-    "dim": 10,
-    "patch_len": [6, 60],
-    "hidden_dim": [16, 24]
-  },
-
-  "Solar": {
-    "dim": 137,
-    "patch_len": [24, 288],
-    "hidden_dim": [24, 32]
-  },
-
-  "Traffic": {
-    "dim": 862,
-    "patch_len": [24, 24],
-    "hidden_dim": [24 ,24]
-  },
-
-  "Weather": {
-    "dim": 20,
-    "patch_len": [24, 144],
-    "hidden_dim": [24, 32]
+  "modelConfig": {
+    "PRNet": {
+      "patch_num": 19,
+      "dropout": 0.1,
+      "layer_num": 3
+    },
+    "iTransformer": {
+      "dropout": 0.1,
+      "d_model": 512,
+      "n_heads": 8,
+      "freq": "h",
+      "embed": "timeF",
+      "class_strategy": "projection",
+      "e_layers": 2,
+      "d_layers": 1,
+      "factor": 1,
+      "use_norm": 1,
+      "output_attention": 0,
+      "d_ff": 512,
+      "moving_avg": 25,
+      "activation": "gelu"
+    }
   }
 }
