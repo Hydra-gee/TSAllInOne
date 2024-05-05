@@ -4,10 +4,8 @@
     "epochs": 100,
     "learning_rate": 0.00005,
     "patience": 5,
-    "seq_len": 720,
-    "pred_len": 96,
     "dataset": "ETTh1",
-    "model": "PRNet"
+    "model": "Crossformer"
   },
   "modelConfig": {
     "PRNet": {
@@ -31,6 +29,9 @@
       "d_ff": 512,
       "moving_avg": 25,
       "activation": "gelu"
+    },
+    "Crossformer": {
+
     }
   }
 }

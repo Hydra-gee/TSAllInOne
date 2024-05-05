@@ -24,7 +24,7 @@ if __name__ == '__main__':
         for pred in [1,2,3.5,7.5]:
             expConfig['patch_len'] = datasetConfig[dataName]['patch_len']
             expConfig['seq_len'] = int(4 * datasetConfig[dataName]['patch_len'])
-            expConfig['pred_len'] = int(expConfig['seq_len'] * pred)
+            expConfig['pred_len'] = int(expConfig['patch_len'] * pred)
             expConfig['dataset'] = dataName
             expConfig['path'] = datasetConfig[expConfig['dataset']]['path']
             expConfig['dim'] = datasetConfig[expConfig['dataset']]['dim']

@@ -12,6 +12,7 @@ from argparse import Namespace
 from data_loader import TSDataset
 from algo.PRNet import PRNet
 from algo.iTransformer import iTransformer
+from algo.Crossformer import Crossformer
 
 
 class Experiment:
@@ -21,6 +22,7 @@ class Experiment:
         self.model_dict = {
             'PRNet': PRNet,
             'iTransformer': iTransformer,
+            'Crossformer': Crossformer
         }
         # self.model_config =
         print('Dataset:', expConfig['dataset'], '\tPrediction Length:', expConfig['pred_len'])
