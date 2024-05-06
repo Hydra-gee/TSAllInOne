@@ -14,12 +14,12 @@ def channel_shuffle(x, groups):
     return x
 
 class MyTransformer(nn.Module):
-    def __init__(self,hid_dim, layers, heads=8):
+    def __init__(self,expConfig,hid_dim, layers, heads=8):
         super().__init__()
         self.heads = heads
         self.layers = layers
         self.hid_dim = hid_dim
-        self.trans = Transformer(hid_dim, heads, layers)
+        self.trans = Transformer(expConfig,hid_dim, heads, layers)
 
     def forward(self, x, mask):
         x = self.trans(x, mask)
@@ -68,7 +68,7 @@ class Model(nn.Module):
         self.bn = ModuleList([BatchNorm2d(hid_dim) for _ in depth])
         self.end_conv1 = nn.Linear(hid_dim, hid_dim*4)
         self.end_conv2 = nn.Linear(hid_dim*4, out_dim)
-        self.network = MyTransformer(hid_dim, layers=layers, heads=8)
+        self.network = MyTransformer(expConfig,hid_dim, layers=layers, heads=8)
         # mask0 = supports[0].detach()
         # mask1 = supports[1].detach()
         # mask = mask0 + mask1

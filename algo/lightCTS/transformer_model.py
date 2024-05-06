@@ -2,7 +2,7 @@ import torch.nn as nn
 from algo.lightCTS.transformer import LightformerLayer,Lightformer
 
 class LearnedPositionalEncoding(nn.Embedding):
-    def __init__(self,d_model, dropout = 0.1,max_len = 170):
+    def __init__(self,d_model, dropout,max_len):
         super().__init__(max_len, d_model)
         self.dropout = nn.Dropout(p = dropout)
     def forward(self, x):
@@ -14,6 +14,7 @@ class LearnedPositionalEncoding(nn.Embedding):
 class Transformer(nn.Module):
     def __init__(
         self,
+        expConfig,
         d_model=32,
         n_heads=8,
         layers=6
@@ -27,7 +28,7 @@ class Transformer(nn.Module):
         self.attention_layer = LightformerLayer(self.hid_dim, self.heads, self.hid_dim * 4)
         self.attention_norm = nn.LayerNorm(self.hid_dim)
         self.attention = Lightformer(self.attention_layer, self.layers, self.attention_norm)
-        self.lpos = LearnedPositionalEncoding(self.hid_dim)
+        self.lpos = LearnedPositionalEncoding(self.hid_dim, 0.1, expConfig['dim'])
 
     def forward(self,input, mask):
         x = input.permute(1,0,2)
