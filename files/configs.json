@@ -5,7 +5,7 @@
     "learning_rate": 0.00005,
     "patience": 5,
     "dataset": "ETTh1",
-    "model": "Crossformer"
+    "model": "lightCTS"
   },
   "modelConfig": {
     "PRNet": {
@@ -31,6 +31,9 @@
       "activation": "gelu"
     },
     "Crossformer": {
+
+    },
+    "lightCTS": {
 
     }
   }

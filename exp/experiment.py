@@ -13,7 +13,7 @@ from data_loader import TSDataset
 from algo.PRNet import PRNet
 from algo.iTransformer import iTransformer
 from algo.Crossformer import Crossformer
-
+from algo.lightCTS import lightCTS
 
 class Experiment:
     def __init__(self, expConfig, modelConfig) -> None:
@@ -22,7 +22,8 @@ class Experiment:
         self.model_dict = {
             'PRNet': PRNet,
             'iTransformer': iTransformer,
-            'Crossformer': Crossformer
+            'Crossformer': Crossformer,
+            'lightCTS':lightCTS
         }
         # self.model_config =
         print('Dataset:', expConfig['dataset'], '\tPrediction Length:', expConfig['pred_len'])
