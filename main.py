@@ -17,11 +17,14 @@ if __name__ == '__main__':
         params = json.load(file)
         expConfig = params['expConfig']
         modelConfig = params['modelConfig']
-        expConfig['device'] = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+        expConfig['device'] = torch.device('cuda:{}'.format(expConfig['cudaId']) if torch.cuda.is_available() else 'cpu')
     with open('files/dataset_configs.json') as file2:
         datasetConfig = json.load(file2)
+    # for dataName in reversed(list(datasetConfig.keys())):
     for dataName in datasetConfig.keys():
         for pred in [1,2,3.5,7.5]:
+            if dataName == 'Traffic' and (pred == 1 or pred==2):
+                continue
             expConfig['patch_len'] = datasetConfig[dataName]['patch_len']
             expConfig['seq_len'] = int(4 * datasetConfig[dataName]['patch_len'])
             expConfig['pred_len'] = int(expConfig['patch_len'] * pred)

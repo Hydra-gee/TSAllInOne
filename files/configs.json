@@ -1,11 +1,12 @@
 {
   "expConfig": {
-    "batch_size": 32,
+    "batch_size":64,
     "epochs": 100,
-    "learning_rate": 0.00005,
-    "patience": 5,
+    "learning_rate": 0.0001,
+    "patience": 4,
     "dataset": "ETTh1",
-    "model": "lightCTS"
+    "model": "Crossformer",
+    "cudaId": 1
   },
   "modelConfig": {
     "PRNet": {

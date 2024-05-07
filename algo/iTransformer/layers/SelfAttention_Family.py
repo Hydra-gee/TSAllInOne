@@ -55,7 +55,6 @@ class FlashAttention(nn.Module):
         BLOCK_SIZE = 32
         NEG_INF = -1e10  # -infinity
         EPSILON = 1e-10
-        # mask = torch.randint(0, 2, (128, 8)).to(device='cuda')
         O = torch.zeros_like(Q, requires_grad=True)
         l = torch.zeros(Q.shape[:-1])[..., None]
         m = torch.ones(Q.shape[:-1])[..., None] * NEG_INF

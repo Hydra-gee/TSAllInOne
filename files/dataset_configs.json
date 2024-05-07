@@ -1,5 +1,25 @@
 {
-  "ETTh1": {
+  "Weather": {
+    "path": "dataset/Weather/mpi_roof.csv",
+    "patch_len": 144,
+    "dim": 20
+  },
+  "Solar": {
+    "path": "dataset/Solar/solar_Alabama_downsample.csv",
+    "patch_len": 96,
+    "dim": 137
+  },
+  "Electricity": {
+    "path": "dataset/Electricity/LD2011_2014.csv",
+    "patch_len": 96,
+    "dim": 370
+  },
+  "Traffic": {
+    "path": "dataset/Traffic/PeMS.csv",
+    "patch_len": 24,
+    "dim": 862
+  },
+    "ETTh1": {
     "path": "dataset/ETT/ETTh1.csv",
     "patch_len": 24,
     "dim": 7
@@ -18,26 +38,5 @@
     "path": "dataset/ETT/ETTm2.csv",
     "patch_len": 96,
     "dim": 7
-  },
-  "Electricity": {
-    "path": "dataset/Electricity/LD2011_2014.csv",
-    "patch_len": 96,
-    "dim": 370
-  },
-  "Solar": {
-    "path": "dataset/Solar/solar_Alabama_downsample.csv",
-    "patch_len": 96,
-    "dim": 137
-  },
-  "Weather": {
-    "path": "dataset/Weather/mpi_roof.csv",
-    "patch_len": 144,
-    "dim": 20
-  },
-  "Traffic": {
-    "path": "dataset/Traffic/PeMS.csv",
-    "patch_len": 24,
-    "dim": 862
   }
-
 }

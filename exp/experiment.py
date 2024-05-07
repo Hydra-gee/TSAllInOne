@@ -28,6 +28,8 @@ class Experiment:
         # self.model_config =
         print('Dataset:', expConfig['dataset'], '\tPrediction Length:', expConfig['pred_len'])
         self.model = self.model_dict[expConfig['model']].Model(expConfig, modelConfig[expConfig['model']]).to(expConfig['device'])
+        # torch.set_float32_matmul_precision('high')
+        # self.model = torch.compile(self.model)
         targetFolder = 'files/networks/' + expConfig['dataset']
         if not os.path.exists(targetFolder):
             os.makedirs(targetFolder)
@@ -48,12 +50,14 @@ class Experiment:
         self.model.train()
         train_loss = 0
         for _, (x, y) in enumerate(loader):
+            # currTime = time.time()
             optimizer.zero_grad()
             y_hat = self.model(x)
             loss = self.mse_func(y_hat, y)
             train_loss += loss.item()
             loss.backward()
             optimizer.step()
+            # print('costTime:', time.time() - currTime)
         return train_loss / len(loader)
 
     def _eval_model(self, loader: DataLoader) -> (float, float):

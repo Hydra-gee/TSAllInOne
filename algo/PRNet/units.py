@@ -26,7 +26,7 @@ class Layer(nn.Module):
 class Encoder(nn.Module):
     def __init__(self, expConfig,args: Namespace, mode: str) -> None:
         super().__init__()
-        layer = Layer(torch.device('cuda', 0), expConfig['patch_len'], args['hidden_dim'], mode, args['dropout'])
+        layer = Layer(torch.device('cuda', 2), expConfig['patch_len'], args['hidden_dim'], mode, args['dropout'])
         self.layer_list = nn.ModuleList([copy.deepcopy(layer) for _ in range(args['layer_num'])])
 
     def forward(self, x: Tensor) -> Tensor:

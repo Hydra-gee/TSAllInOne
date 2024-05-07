@@ -12,8 +12,8 @@ from math import ceil
 
 class Model(nn.Module):
     def __init__(self, expConfig,modelConfig, win_size = 2,
-                factor=10, d_model=256, d_ff = 512, n_heads=4, e_layers=3,
-                dropout=0.2, baseline = False, device=torch.device('cuda:0')):
+                factor=10, d_model=64, d_ff = 128, n_heads=2, e_layers=3,
+                dropout=0.2, baseline = False):
         super(Model, self).__init__()
         self.data_dim = expConfig['dim']
         self.in_len = expConfig['seq_len']
@@ -23,7 +23,7 @@ class Model(nn.Module):
 
         self.baseline = baseline
 
-        self.device = device
+        self.device = expConfig['device']
 
         # The padding operation to handle invisible sgemnet length
         self.pad_in_len = ceil(1.0 * self.in_len / self.seg_len) * self.seg_len
